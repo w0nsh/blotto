@@ -1,0 +1,6 @@
+(executable
+ (name blotto_client_web_ui)
+ (modes js)
+ (libraries js_of_ocaml bonsai bonsai.web async_kernel async_js)
+ (preprocess
+  (pps ppx_jane bonsai.ppx_bonsai)))

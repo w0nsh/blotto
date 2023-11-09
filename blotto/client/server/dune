@@ -1,0 +1,6 @@
+(executable
+ (name blotto_client_server)
+ (public_name blotto_client_server)
+ (libraries core async cohttp-async)
+ (preprocess
+  (pps ppx_jane)))
