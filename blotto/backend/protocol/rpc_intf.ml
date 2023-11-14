@@ -15,7 +15,10 @@ module type S = sig
   include Arg
 
   val dispatch : Rpc.Connection.t -> Query.t -> Response.t Deferred.Or_error.t
-  val implement : ('a -> Query.t -> Response.t Deferred.t) -> 'a Rpc.Implementation.t
+
+  val implement
+    :  (rpc_tag:string -> 'a -> Query.t -> Response.t Deferred.t)
+    -> 'a Rpc.Implementation.t
 end
 
 module Make (M : sig
@@ -32,5 +35,5 @@ module Make (M : sig
   ;;
 
   let dispatch = Rpc.Rpc.dispatch rpc
-  let implement f = Rpc.Rpc.implement rpc f
+  let implement f = Rpc.Rpc.implement rpc (f ~rpc_tag:M.rpc_name)
 end
