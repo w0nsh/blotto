@@ -1,0 +1,7 @@
+(library
+ (name blotto_server_lib)
+ (libraries core async blotto_kernel_lib)
+ (inline_tests
+  (deps english-words.txt))
+ (preprocess
+  (pps ppx_jane)))

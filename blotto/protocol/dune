@@ -1,5 +1,0 @@
-(library
- (name blotto_protocol)
- (libraries core async)
- (preprocess
-  (pps ppx_jane)))
