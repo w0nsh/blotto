@@ -1,12 +1,11 @@
 (library
- (name blotto_backend_server_lib)
+ (name blotto_backend_cli_lib)
  (libraries
   core
   async
   async.log_extended
   blotto_kernel_lib
   blotto_backend_protocol_lib)
- (inline_tests
-  (deps english-words.txt))
+ (inline_tests)
  (preprocess
   (pps ppx_jane)))
