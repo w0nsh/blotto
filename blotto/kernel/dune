@@ -1,0 +1,7 @@
+(library
+ (flags :standard -alert)
+ (name blotto_kernel_lib)
+ (libraries core async_kernel str)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))
