@@ -1,8 +1,13 @@
 open! Core
 
-include
-  String_id.Make
-    (struct
-      let module_name = "Game_id"
-    end)
-    ()
+module T = struct
+  include
+    String_id.Make
+      (struct
+        let module_name = "Game_id"
+      end)
+      ()
+end
+
+include T
+include Hashable.Make_binable (T)

@@ -1,6 +1,6 @@
 open! Core
 
-type t [@@deriving sexp]
+type t [@@deriving sexp, bin_io]
 
 val length : int
 val soliders_cnt : int

@@ -1,5 +1,5 @@
 (library
- (name blotto_client_protocol)
+ (name blotto_frontend_protocol)
  (libraries core async)
  (preprocess
   (pps ppx_jane)))

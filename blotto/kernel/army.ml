@@ -1,6 +1,6 @@
 open! Core
 
-type t = int array [@@deriving sexp]
+type t = int array [@@deriving sexp, bin_io]
 
 let length = 10
 let soliders_cnt = 100

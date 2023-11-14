@@ -1,5 +1,5 @@
 (executable
- (name blotto_client_web_ui)
+ (name blotto_frontend_web_ui)
  (modes js)
  (libraries js_of_ocaml bonsai bonsai.web async_kernel async_js)
  (preprocess

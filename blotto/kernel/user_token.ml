@@ -1,7 +1,7 @@
 open! Core
 
 module T = struct
-  type t = string [@@deriving sexp, compare, equal, hash]
+  type t = string [@@deriving sexp, compare, equal, hash, bin_io]
 
   let create str =
     if String.for_all str ~f:(fun c -> Char.is_lowercase c || Char.equal c '-')
@@ -32,5 +32,5 @@ module T = struct
 end
 
 include T
-include Hashable.Make (T)
-include Comparable.Make (T)
+include Hashable.Make_binable (T)
+include Comparable.Make_binable (T)
