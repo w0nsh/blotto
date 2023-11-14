@@ -1,5 +1,5 @@
 (library
- (name blotto_server_lib)
+ (name blotto_backend_server_lib)
  (libraries core async blotto_kernel_lib)
  (inline_tests
   (deps english-words.txt))

@@ -5,7 +5,7 @@ type t =
   ; surname : string
   ; email : Email.t
   }
-[@@deriving sexp, compare, equal, fields ~getters]
+[@@deriving sexp, compare, equal, fields ~getters, bin_io]
 
 let name_regexp = Str.regexp {|^[A-Z][a-z,ą,ę,ć,ź,ś,ł,ó,ń,ż]*$|}
 

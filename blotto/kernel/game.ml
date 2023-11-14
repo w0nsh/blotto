@@ -4,7 +4,7 @@ module Allowed_users = struct
   type t =
     | Any
     | Users of User_token.Set.t
-  [@@deriving sexp]
+  [@@deriving sexp, bin_io]
 end
 
 type t =
@@ -16,7 +16,7 @@ type t =
   ; rule_description : string
   ; entries : Army.t User_token.Table.t
   }
-[@@deriving sexp, fields ~getters]
+[@@deriving sexp, fields ~getters, bin_io]
 
 let create ~name ~description ~start_date ~end_date ~allowed_users ~rule_description =
   if Time_ns.( > ) start_date end_date

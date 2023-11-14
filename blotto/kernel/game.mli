@@ -4,10 +4,10 @@ module Allowed_users : sig
   type t =
     | Any
     | Users of User_token.Set.t
-  [@@deriving sexp]
+  [@@deriving sexp, bin_io]
 end
 
-type t [@@deriving sexp]
+type t [@@deriving sexp, bin_io]
 
 val create
   :  name:string

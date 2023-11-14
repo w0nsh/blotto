@@ -1,6 +1,6 @@
 open! Core
 
-type t [@@deriving sexp, compare, equal]
+type t [@@deriving sexp, compare, equal, bin_io]
 
 val create : name:string -> surname:string -> email:string -> t Or_error.t
 val name : t -> string

@@ -1,6 +1,6 @@
 open! Core
 
-type t = string [@@deriving sexp, equal, compare]
+type t = string [@@deriving sexp, equal, compare, bin_io]
 
 let email_regexp =
   Str.regexp
