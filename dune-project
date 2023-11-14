@@ -5,20 +5,18 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github w0nsh/blotto))
 
-(authors "Adam Zyzik")
+(authors "Adam Zyzik" "Franciszek Malinka")
 
-(maintainers "Maintainer Name")
+(maintainers "Adam Zyzik")
 
-(license LICENSE)
-
-(documentation https://url/to/documentation)
+(license MIT)
 
 (package
  (name blotto)
  (synopsis "Colonel Blotto game")
- (description "A longer description")
+ (description "Platform for organization of Colonel Blotto games.")
  (depends
   (ocaml
    (>= 4.14.1))
@@ -32,6 +30,6 @@
    (= v0.17~preview.128.42+83))
   dune)
  (tags
-  (topics "to describe" your project)))
+  ("blotto" "fun")))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
