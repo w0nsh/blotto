@@ -1,0 +1,6 @@
+(executable
+ (public_name blotto_backend_server)
+ (name server)
+ (libraries core core_unix.command_unix blotto_backend_server_lib)
+ (preprocess
+  (pps ppx_jane)))
