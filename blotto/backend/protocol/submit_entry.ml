@@ -17,18 +17,11 @@ module T = struct
   end
 
   module Response = struct
-    module Result = struct
-      type t =
-        | Accepted
-        | Rejected
-      [@@deriving sexp, bin_io]
-    end
-
-    type t = Result.t Or_error.t [@@deriving sexp, bin_io]
+    type t = unit Or_error.t [@@deriving sexp, bin_io]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
-      [%expect {| fef4bdef158b01eb8e3427afedf31731 |}]
+      [%expect {| 27f76252e5181aab209cd62aa6e42268 |}]
     ;;
   end
 

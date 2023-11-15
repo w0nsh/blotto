@@ -20,7 +20,7 @@ module T = struct
     ;;
   end
 
-  let rpc_name = "remove_game"
+  let rpc_name = "list_users"
 end
 
 include T

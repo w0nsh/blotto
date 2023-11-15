@@ -18,12 +18,66 @@ let unkown_rpc rpc_state ~rpc_tag ~version =
 
 let get_games_implementation ~state ~rpc_tag rpc_state (() : Get_games.Query.t) =
   log_rpc rpc_state rpc_tag;
-  ignore state;
-  Deferred.Or_error.return (Game_id.Table.create ())
+  Deferred.Or_error.return (State.get_games state)
 ;;
 
+let create_game_implrementation ~state ~rpc_tag rpc_state (query : Create_game.Query.t) =
+  log_rpc rpc_state rpc_tag;
+  State.create_game state query.game_id query.game |> return
+;;
+
+let register_user_implementation ~state ~rpc_tag rpc_state (query : Register_user.Query.t)
+  =
+  log_rpc rpc_state rpc_tag;
+  State.create_user state query |> return
+;;
+
+let update_game_implementation
+  ~state
+  ~rpc_tag
+  rpc_state
+  { Update_game.Query.id; start_date; end_date; allowed_users; rule }
+  =
+  log_rpc rpc_state rpc_tag;
+  let%bind.Deferred.Or_error () =
+    State.update_game ?start_date ?end_date ?allowed_users ?rule state id |> return
+  in
+  let%bind.Deferred.Or_error game = State.get_game state id |> return in
+  Deferred.Or_error.return { Update_game.Response.Result.id; game }
+;;
+
+let remove_game_implementation ~state ~rpc_tag rpc_state game_id =
+  log_rpc rpc_state rpc_tag;
+  State.remove_game state game_id |> return
+;;
+
+let list_users_implementation ~state ~rpc_tag rpc_state () =
+  log_rpc rpc_state rpc_tag;
+  State.list_users state |> Deferred.Or_error.return
+;;
+
+let submit_entry_implementation
+  ~state
+  ~rpc_tag
+  rpc_state
+  { Submit_entry.Query.game_id; token; army }
+  =
+  log_rpc rpc_state rpc_tag;
+  State.add_entry state ~token ~army ~game_id |> return
+;;
+
+(* TODO: Get scoreboard. *)
 let implementations state =
-  let implementations = [ Get_games.implement (get_games_implementation ~state) ] in
+  let implementations =
+    [ Get_games.implement (get_games_implementation ~state)
+    ; Create_game.implement (create_game_implrementation ~state)
+    ; Register_user.implement (register_user_implementation ~state)
+    ; Update_game.implement (update_game_implementation ~state)
+    ; Remove_game.implement (remove_game_implementation ~state)
+    ; List_users.implement (list_users_implementation ~state)
+    ; Submit_entry.implement (submit_entry_implementation ~state)
+    ]
+  in
   Rpc.Implementations.create_exn ~implementations ~on_unknown_rpc:(`Call unkown_rpc)
 ;;
 

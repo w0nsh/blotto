@@ -3,28 +3,24 @@ open Blotto_kernel_lib
 
 module T = struct
   module Query = struct
-    type t = Game_id.t [@@deriving sexp, bin_io]
+    type t =
+      { game_id : Game_id.t
+      ; game : Game.t
+      }
+    [@@deriving sexp, bin_io]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
-      [%expect {| d9a8da25d5656b016fb4dbdc2e4197fb |}]
+      [%expect {| ef2522b189908ea8a8df7fbcf7f45c12 |}]
     ;;
   end
 
   module Response = struct
-    module Result = struct
-      type t =
-        { id : Game_id.t
-        ; game : Game.t
-        }
-      [@@deriving sexp, bin_io]
-    end
-
-    type t = Result.t Or_error.t [@@deriving sexp, bin_io]
+    type t = unit Or_error.t [@@deriving sexp, bin_io]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
-      [%expect {| 89b87d429d685ec6ecfe3008150c676c |}]
+      [%expect {| 27f76252e5181aab209cd62aa6e42268 |}]
     ;;
   end
 

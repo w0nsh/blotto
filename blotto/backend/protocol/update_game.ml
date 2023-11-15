@@ -7,14 +7,14 @@ module T = struct
       { id : Game_id.t
       ; start_date : Time_ns.Alternate_sexp.t option [@sexp.option]
       ; end_date : Time_ns.Alternate_sexp.t option [@sexp.option]
-      ; allowed_tokens : Game.Allowed_users.t option [@sexp.option]
-      ; rule_description : string option [@sexp.option]
+      ; allowed_users : Game.Allowed_users.t option [@sexp.option]
+      ; rule : Rule.t option [@sexp.option]
       }
     [@@deriving sexp, bin_io]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
-      [%expect {| 59da0922be056a3794b0d2a1313a8649 |}]
+      [%expect {| 57bfde3f7f19c1289d756b8ce61a54b4 |}]
     ;;
   end
 
