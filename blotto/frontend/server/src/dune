@@ -1,5 +1,5 @@
 (library
  (name blotto_frontend_server_lib)
- (libraries core async cohttp-async)
+ (libraries core async async.log_extended cohttp-async)
  (preprocess
   (pps ppx_jane)))

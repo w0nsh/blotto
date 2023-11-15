@@ -1,7 +1,6 @@
 open! Core
 open Async
-open Blotto_backend_protocol_lib
-open Blotto_kernel_lib
+open Import
 
 module Rpc_state = struct
   type t = Socket.Address.Inet.t * Rpc.Connection.t [@@deriving sexp_of]

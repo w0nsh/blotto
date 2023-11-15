@@ -23,3 +23,5 @@ module Response : sig
 
   type t = Result.t Or_error.t [@@deriving sexp, bin_io]
 end
+
+val rpc_name : string

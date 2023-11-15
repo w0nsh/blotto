@@ -5,7 +5,8 @@
   async
   async.log_extended
   blotto_kernel_lib
-  blotto_backend_protocol_lib)
+  blotto_backend_protocol_lib
+  blotto_backend_rpc_lib)
  (inline_tests
   (deps english-words.txt))
  (preprocess

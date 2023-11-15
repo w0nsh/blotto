@@ -1,6 +1,6 @@
 open! Core
 open Async
-open Blotto_kernel_lib
+open Import
 
 type t =
   { random_state : Random.State.t

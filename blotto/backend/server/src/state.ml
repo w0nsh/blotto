@@ -1,7 +1,6 @@
 open! Core
 open Async
-open Blotto_kernel_lib
-open Blotto_backend_protocol_lib
+open Import
 
 type t =
   { games : Game.t Game_id.Table.t

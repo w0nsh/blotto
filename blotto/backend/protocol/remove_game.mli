@@ -8,3 +8,5 @@ end
 module Response : sig
   type t = unit Or_error.t [@@deriving sexp, bin_io]
 end
+
+val rpc_name : string

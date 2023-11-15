@@ -9,6 +9,8 @@ module type Arg = sig
   module Response : sig
     type t [@@deriving sexp, bin_io]
   end
+
+  val rpc_name : string
 end
 
 module type S = sig
@@ -21,19 +23,18 @@ module type S = sig
     -> 'a Rpc.Implementation.t
 end
 
-module Make (M : sig
-    include Arg
+module Make (Arg : Arg) :
+  S with module Query := Arg.Query and module Response := Arg.Response = struct
+  include Arg
 
-    val rpc_name : string
-  end) : S with module Query := M.Query and module Response := M.Response = struct
   let rpc =
     Rpc.Rpc.create
-      ~name:M.rpc_name
+      ~name:Arg.rpc_name
       ~version:1
-      ~bin_query:M.Query.bin_t
-      ~bin_response:M.Response.bin_t
+      ~bin_query:Arg.Query.bin_t
+      ~bin_response:Arg.Response.bin_t
   ;;
 
   let dispatch = Rpc.Rpc.dispatch rpc
-  let implement f = Rpc.Rpc.implement rpc (f ~rpc_tag:M.rpc_name)
+  let implement f = Rpc.Rpc.implement rpc (f ~rpc_tag:Arg.rpc_name)
 end

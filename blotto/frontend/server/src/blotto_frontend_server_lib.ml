@@ -14,6 +14,11 @@ let command =
   Command.async
     ~summary:"Start server"
     ~readme:(fun () -> "Starts server at a given port")
-    (let%map_open port = anon ("port" %: int) in
+    (let%map_open () =
+       Log_extended.Command.setup_via_params
+         ~log_to_console_by_default:(Stderr Color)
+         ~log_to_syslog_by_default:false
+         ()
+     and port = anon ("port" %: int) in
      fun () -> listen ~port)
 ;;

@@ -1,6 +1,6 @@
 (library
  (name blotto_backend_protocol_lib)
- (libraries blotto_kernel_lib core async)
+ (libraries blotto_kernel_lib core)
  (inline_tests)
  (preprocess
   (pps ppx_jane)))
