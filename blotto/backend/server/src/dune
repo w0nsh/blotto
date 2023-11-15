@@ -6,8 +6,7 @@
   async.log_extended
   blotto_kernel_lib
   blotto_backend_protocol_lib)
- (inline_tests
-  (deps english-words.txt))
+ (inline_tests)
  (preprocess
   (pps ppx_jane)))
 
