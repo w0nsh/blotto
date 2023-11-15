@@ -1,6 +1,6 @@
 open! Core
 
-type t [@@deriving sexp]
+type t [@@deriving sexp, bin_io, equal]
 
 val basic : t
 val first_win_tripled : t

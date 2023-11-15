@@ -4,16 +4,16 @@ module Kind = struct
   type t =
     | Basic
     | First_win_tripled
-  [@@deriving sexp]
+  [@@deriving sexp, bin_io, equal]
 end
 
 type t =
   { kind : Kind.t
   ; description : string
   }
-[@@deriving sexp]
+[@@deriving sexp, bin_io, equal]
 
-let basic = { kind = Basic; description = "Description of the basic evaluator" }
+let basic = { kind = Basic; description = "Description of the basic rule." }
 
 let first_win_tripled =
   { kind = First_win_tripled; description = "First won castle's score is tripled. " }

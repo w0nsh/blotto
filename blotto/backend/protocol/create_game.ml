@@ -3,11 +3,11 @@ open Blotto_kernel_lib
 
 module T = struct
   module Query = struct
-    type t = unit [@@deriving sexp, bin_io]
+    type t = Game_id.t [@@deriving sexp, bin_io]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
-      [%expect {| 86ba5df747eec837f0b391dd49f33f9e |}]
+      [%expect {| d9a8da25d5656b016fb4dbdc2e4197fb |}]
     ;;
   end
 
@@ -24,7 +24,7 @@ module T = struct
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
-      [%expect {| 4241b7c7098355ab65f26da0aec80405 |}]
+      [%expect {| 89b87d429d685ec6ecfe3008150c676c |}]
     ;;
   end
 
