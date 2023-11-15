@@ -1,34 +1,22 @@
 open! Core
-open! Async_kernel
-open! Bonsai_web
-open! Async_js
-open Bonsai.Let_syntax
+open! Import
 
-let get_google_com =
-  Effect.of_deferred_thunk (fun () ->
-    let%bind.Deferred () = Clock_ns.after (Time_ns.Span.of_sec 1.0) in
-    Http.get "http://localhost:5000")
+let run () =
+  Async_js.init ();
+  let%bind conn = Rpc.Connection.client_exn () in
+  let api = Api.create conn in
+  let app = App.component ~api in
+  let theme =
+    Kado.theme
+      ~style:Kado.Style.Light
+      ~set_min_height_to_100vh:()
+      ~version:Kado.Version.Bleeding
+      ()
+  in
+  let themed_app = View.Theme.set_for_app (Value.return theme) app in
+  let () = Bonsai_web.Start.start themed_app in
+  (* don't_wait_for (some_rpc ~conn); *)
+  return ()
 ;;
 
-let component =
-  let%sub response, set_response = Bonsai.state_opt ~sexp_of_model:String.sexp_of_t () in
-  let%sub on_activate =
-    let%arr set_response = set_response in
-    let%bind.Effect response = get_google_com in
-    match response with
-    | Ok response -> set_response (Some response)
-    | Error err ->
-      let response = sprintf "Error: %s" (Error.to_string_hum err) in
-      set_response (Some response)
-  in
-  let%sub () = Bonsai.Edge.lifecycle ~on_activate () in
-  let%arr response = response in
-  let text =
-    match response with
-    | Some response -> response
-    | None -> "waiting for response"
-  in
-  Vdom.Node.text text
-;;
-
-let () = Bonsai_web.Start.start component
+let () = don't_wait_for (run ())

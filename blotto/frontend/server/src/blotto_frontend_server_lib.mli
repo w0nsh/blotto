@@ -1,3 +1,3 @@
-open Async
+open Core
 
 val command : Command.t
