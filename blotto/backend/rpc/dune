@@ -1,0 +1,6 @@
+(library
+ (name blotto_backend_rpc)
+ (libraries blotto_backend_protocol_rpc core async)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))
