@@ -6,8 +6,8 @@ module Query : sig
     { id : Game_id.t
     ; start_date : Time_ns.Alternate_sexp.t option
     ; end_date : Time_ns.Alternate_sexp.t option
-    ; allowed_tokens : Game.Allowed_users.t option
-    ; rule_description : string option
+    ; allowed_users : Game.Allowed_users.t option
+    ; rule : Rule.t option
     }
   [@@deriving sexp, bin_io]
 end

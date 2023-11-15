@@ -36,6 +36,24 @@ let save_data t filename =
     Writer.save_sexp ~fsync:true ~hum:true filename (Data.sexp_of_t t.data))
 ;;
 
+let get_games { data; _ } = data.games
+
+let get_game { data; _ } game_id =
+  match Hashtbl.find data.games game_id with
+  | None -> Or_error.error_s [%message "No game with id" (game_id : Game_id.t)]
+  | Some game -> Ok game
+;;
+
+let remove_game { data; _ } game_id =
+  match Hashtbl.find data.games game_id with
+  | None -> Or_error.error_s [%message "No game with id" (game_id : Game_id.t)]
+  | Some _ ->
+    Hashtbl.remove data.games game_id;
+    Ok ()
+;;
+
+let list_users { data; _ } = data.users
+
 let get_unique_token { data; token_generator } =
   let rec get_unique_token_aux () =
     let token = User_token_generator.get_token token_generator ~num_words:3 in
@@ -63,7 +81,7 @@ let create_game { data; _ } id game =
       [%message "This game id already exists, use something else." (id : Game_id.t)]
 ;;
 
-let update_game ?start_date ?end_date ?allowed_users { data; _ } game_id =
+let update_game ?start_date ?end_date ?allowed_users ?rule { data; _ } game_id =
   match Hashtbl.find data.games game_id with
   | None ->
     Or_error.error_s
@@ -71,11 +89,12 @@ let update_game ?start_date ?end_date ?allowed_users { data; _ } game_id =
   | Some game ->
     let start_date = Option.value start_date ~default:game.start_date
     and end_date = Option.value end_date ~default:game.end_date
-    and allowed_users = Option.value allowed_users ~default:game.allowed_users in
+    and allowed_users = Option.value allowed_users ~default:game.allowed_users
+    and rule = Option.value rule ~default:game.rule in
     Hashtbl.set
       data.games
       ~key:game_id
-      ~data:{ game with start_date; end_date; allowed_users };
+      ~data:{ game with start_date; end_date; allowed_users; rule };
     Ok ()
 ;;
 
