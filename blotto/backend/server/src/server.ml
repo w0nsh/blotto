@@ -30,7 +30,7 @@ let implementations state =
 
 let run (config : Config.t) =
   let where_to_listen = Tcp.Where_to_listen.of_port config.port in
-  let%bind.Deferred.Or_error state = State.init config in
+  let state = State.init () in
   Log.Global.info_s
     [%message "Spinning up server" (where_to_listen : Tcp.Where_to_listen.inet)];
   let%bind server =
