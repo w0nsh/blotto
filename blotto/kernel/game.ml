@@ -4,7 +4,7 @@ module Allowed_users = struct
   type t =
     | Any
     | Users of User_token.Set.t
-  [@@deriving sexp, bin_io]
+  [@@deriving sexp, bin_io, equal]
 end
 
 type t =
@@ -13,12 +13,12 @@ type t =
   ; start_date : Time_ns.Alternate_sexp.t
   ; end_date : Time_ns.Alternate_sexp.t
   ; allowed_users : Allowed_users.t
-  ; rule_description : string
+  ; rule : Rule.t
   ; entries : Army.t User_token.Table.t
   }
-[@@deriving sexp, fields ~getters, bin_io]
+[@@deriving sexp, bin_io, equal]
 
-let create ~name ~description ~start_date ~end_date ~allowed_users ~rule_description =
+let create ~name ~description ~start_date ~end_date ~allowed_users ~rule =
   if Time_ns.( > ) start_date end_date
   then
     Or_error.error_s
@@ -33,7 +33,7 @@ let create ~name ~description ~start_date ~end_date ~allowed_users ~rule_descrip
       ; start_date
       ; end_date
       ; allowed_users
-      ; rule_description
+      ; rule
       ; entries = User_token.Table.create ()
       }
 ;;
@@ -48,7 +48,7 @@ let%expect_test "create" =
       ~start_date:Time_ns.min_value_representable
       ~end_date:Time_ns.max_value_representable
       ~allowed_users:Any
-      ~rule_description:"Basic rules"
+      ~rule:Rule.basic
   in
   let game2 =
     create
@@ -57,7 +57,7 @@ let%expect_test "create" =
       ~start_date:Time_ns.max_value_representable
       ~end_date:Time_ns.min_value_representable
       ~allowed_users:Any
-      ~rule_description:"Basic rules"
+      ~rule:Rule.basic
   in
   print_s [%sexp (game1 : t Or_error.t)];
   print_s [%sexp (game2 : t Or_error.t)];
@@ -67,7 +67,8 @@ let%expect_test "create" =
      ((name "Game 1") (description "Some description of the rules.")
       (start_date "1823-11-12 00:06:21.572612096Z")
       (end_date "2116-02-20 23:53:38.427387903Z") (allowed_users Any)
-      (rule_description "Basic rules") (entries ())))
+      (rule ((kind Basic) (description "Description of the basic rule.")))
+      (entries ())))
     (Error
      ("Start date must be before end date."
       (start_date "2116-02-20 23:53:38.427387903Z")
@@ -86,7 +87,7 @@ let%expect_test "create" =
      ((name "Game 1") (description "Some description of the rules.")
       (start_date "1823-11-12 00:06:21.572612096Z")
       (end_date "2116-02-20 23:53:38.427387903Z") (allowed_users Any)
-      (rule_description "Basic rules")
+      (rule ((kind Basic) (description "Description of the basic rule.")))
       (entries
        ((first-token (1 2 3 4 5 6 7 8 9 55))
         (second-token (10 10 10 10 10 10 10 10 10 10)))))) |}]

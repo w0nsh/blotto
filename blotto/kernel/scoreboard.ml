@@ -1,6 +1,6 @@
 open! Core
 
-type t = (Army.t * float) User_token.Table.t [@@deriving sexp, bin_io]
+type t = (Army.t * float) User_token.Table.t [@@deriving sexp, bin_io, equal]
 
 let user_score token entry eval entries =
   let sum =

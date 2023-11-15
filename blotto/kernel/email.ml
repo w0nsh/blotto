@@ -13,6 +13,8 @@ let create str =
   else Or_error.error_s [%message "This is not a valid email address." str]
 ;;
 
+let create_exn str = create str |> Or_error.ok_exn
+
 let%expect_test "create" =
   let emails =
     [ "prawdziwy@email.com"

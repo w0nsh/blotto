@@ -24,6 +24,8 @@ let create ~name ~surname ~email =
     { name; surname; email })
 ;;
 
+let create_exn ~name ~surname ~email = create ~name ~surname ~email |> Or_error.ok_exn
+
 let%expect_test "create" =
   let data1 = create ~name:"Franciszek" ~surname:"Truskawka" ~email:"prawdziwy@email.com"
   and data2 = create ~name:"Franciszek" ~surname:"truskawka" ~email:"prawdziwy@email.com"
