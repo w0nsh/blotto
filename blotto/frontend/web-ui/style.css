@@ -1,0 +1,9 @@
+document,
+body {
+    margin: 0;
+}
+
+.main-view {
+    text-align: center;
+    background-color: brown;
+}

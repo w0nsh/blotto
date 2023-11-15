@@ -1,34 +1,41 @@
 open! Core
-open! Async_kernel
-open! Bonsai_web
-open! Async_js
-open Bonsai.Let_syntax
+open! Import
 
-let get_google_com =
-  Effect.of_deferred_thunk (fun () ->
-    let%bind.Deferred () = Clock_ns.after (Time_ns.Span.of_sec 1.0) in
-    Http.get "http://localhost:5000")
+let attempt_to_connect () =
+  log_s [%message "Attempting to connect to the backend server"];
+  let%map result = Rpc.Connection.client () in
+  let print_result () =
+    match result with
+    | Ok _ -> log_s [%message "Connected"]
+    | Error err -> log_s [%message "Connection failed " (err : Error.t)]
+  in
+  print_result ();
+  result
 ;;
 
-let component =
-  let%sub response, set_response = Bonsai.state_opt ~sexp_of_model:String.sexp_of_t () in
-  let%sub on_activate =
-    let%arr set_response = set_response in
-    let%bind.Effect response = get_google_com in
-    match response with
-    | Ok response -> set_response (Some response)
-    | Error err ->
-      let response = sprintf "Error: %s" (Error.to_string_hum err) in
-      set_response (Some response)
+let run () =
+  Async_js.init ();
+  let server_connection =
+    Persistent_connection.Rpc.create
+      ~server_name:"server connection"
+      ~retry_delay:(fun () -> Time_ns.Span.of_sec 2.0)
+      ~connect:attempt_to_connect
+      ~address:(module Unit)
+      (fun () -> Deferred.Or_error.return ())
   in
-  let%sub () = Bonsai.Edge.lifecycle ~on_activate () in
-  let%arr response = response in
-  let text =
-    match response with
-    | Some response -> response
-    | None -> "waiting for response"
+  let api = Api.create server_connection in
+  let app = App.component ~api in
+  let theme =
+    Kado.theme
+      ~style:Kado.Style.Light
+      ~set_min_height_to_100vh:()
+      ~version:Kado.Version.Bleeding
+      ()
   in
-  Vdom.Node.text text
+  let themed_app = View.Theme.set_for_app (Value.return theme) app in
+  let () = Bonsai_web.Start.start themed_app in
+  (* don't_wait_for (some_rpc ~conn); *)
+  return ()
 ;;
 
-let () = Bonsai_web.Start.start component
+let () = don't_wait_for (run ())

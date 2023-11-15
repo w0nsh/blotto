@@ -1,4 +1,3 @@
 open Async
 
-val create :
-  port:int -> (Socket.Address.Inet.t, int) Cohttp_async.Server.t Deferred.t
+val run : config:Config.t -> unit Deferred.t
