@@ -9,4 +9,4 @@ module Response : sig
   type t = Scoreboard.t Or_error.t [@@deriving sexp, bin_io]
 end
 
-val rpc_name : string
+include Rpc_intf.S with module Query := Query and module Response := Response
