@@ -2,12 +2,8 @@ open! Core
 open! Import
 open Bonsai.Let_syntax
 
-let list_of_games games =
-  N.text ((Game_id.Table.sexp_of_t Game.sexp_of_t) games |> Sexp.to_string)
-;;
-
-let component ~api =
-  let%sub theme = View.Theme.current in
+(* TODO: move *)
+let games_downloader ~api =
   let%sub response, set_response =
     Bonsai.state_opt ~sexp_of_model:Get_games.Response.sexp_of_t ()
   in
@@ -17,20 +13,17 @@ let component ~api =
     set_response (Some response)
   in
   let%sub () = Bonsai.Edge.lifecycle ~on_activate () in
-  let%arr response = response
-  and theme = theme in
-  let games =
-    match response with
-    | Some response ->
-      (match response with
-       | Error err -> N.text (Error.to_string_hum err)
-       | Ok games -> list_of_games games)
-    | None -> N.text "waiting for response"
+  return response
+;;
+
+let component ~api =
+  let%sub response = games_downloader ~api in
+  let%sub games_list_component =
+    match%sub response with
+    | None -> Bonsai.const (N.text "downloading...")
+    | Some games -> Games_list.component games
   in
-  [ games
-  ; N.text (View.Theme.name theme)
-  ; View.button theme ~on_click:(Effect.return ()) "button"
-  ]
-  |> List.intersperse ~sep:(N.br ())
-  |> N.div ~attrs:[ A.class_ "main-view" ]
+  let%arr games_list_component = games_list_component in
+  let main_view = View.vbox [ N.h1 [ N.text "Blotto" ]; games_list_component ] in
+  N.div ~attrs:[ A.class_ "main-view" ] [ main_view ]
 ;;

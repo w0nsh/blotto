@@ -4,5 +4,6 @@ body {
 }
 
 .main-view {
+    text-align: center;
     background-color: brown;
 }
