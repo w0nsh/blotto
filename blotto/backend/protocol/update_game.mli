@@ -4,10 +4,12 @@ open Blotto_kernel_lib
 module Query : sig
   type t =
     { id : Game_id.t
-    ; start_date : Time_ns.Alternate_sexp.t option
-    ; end_date : Time_ns.Alternate_sexp.t option
-    ; allowed_users : Game.Allowed_users.t option
-    ; rule : Rule.t option
+    ; name : string option [@sexp.option]
+    ; description : string option [@sexp.option]
+    ; start_date : Time_ns.Alternate_sexp.t option [@sexp.option]
+    ; end_date : Time_ns.Alternate_sexp.t option [@sexp.option]
+    ; allowed_users : Game.Allowed_users.t option [@sexp.option]
+    ; rule : Rule.t option [@sexp.option]
     }
   [@@deriving sexp, bin_io]
 end

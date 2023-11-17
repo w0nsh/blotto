@@ -11,3 +11,5 @@ end
 
 include T
 include Hashable.Make_binable (T)
+
+let arg_type = Command.Arg_type.create of_string

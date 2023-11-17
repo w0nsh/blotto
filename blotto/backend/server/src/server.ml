@@ -37,15 +37,34 @@ let register_user_implementation ~state ~rpc_tag rpc_state (query : Register_use
   State.create_user state query |> return
 ;;
 
+let get_scoreboard_implementation
+  ~state
+  ~rpc_tag
+  rpc_state
+  (query : Get_scoreboard.Query.t)
+  =
+  log_rpc rpc_state rpc_tag;
+  State.get_scoreboard state query |> return
+;;
+
 let update_game_implementation
   ~state
   ~rpc_tag
   rpc_state
-  { Update_game.Query.id; start_date; end_date; allowed_users; rule }
+  { Update_game.Query.id; name; description; start_date; end_date; allowed_users; rule }
   =
   log_rpc rpc_state rpc_tag;
   let%bind.Deferred.Or_error () =
-    State.update_game ?start_date ?end_date ?allowed_users ?rule state id |> return
+    State.update_game
+      ?name
+      ?description
+      ?start_date
+      ?end_date
+      ?allowed_users
+      ?rule
+      state
+      id
+    |> return
   in
   let%bind.Deferred.Or_error game = State.get_game state id |> return in
   Deferred.Or_error.return { Update_game.Response.Result.id; game }
@@ -82,6 +101,7 @@ let implementations state =
     ; Remove_game.implement (remove_game_implementation ~state)
     ; List_users.implement (list_users_implementation ~state)
     ; Submit_entry.implement (submit_entry_implementation ~state)
+    ; Get_scoreboard.implement (get_scoreboard_implementation ~state)
     ]
   in
   Rpc.Implementations.create_exn ~implementations ~on_unknown_rpc:(`Call unkown_rpc)

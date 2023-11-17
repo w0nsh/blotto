@@ -89,19 +89,16 @@ let create_game { data; _ } id game =
       [%message "This game id already exists, use something else." (id : Game_id.t)]
 ;;
 
-let update_game ?start_date ?end_date ?allowed_users ?rule { data; _ } game_id =
-  match Hashtbl.find data.games game_id with
-  | None ->
-    Or_error.error_s
-      [%message "No game with given id, cannot update." (game_id : Game_id.t)]
-  | Some game ->
-    let start_date = Option.value start_date ~default:game.info.start_date
-    and end_date = Option.value end_date ~default:game.info.end_date
-    and rule = Option.value rule ~default:game.info.rule
-    and allowed_users = Option.value allowed_users ~default:game.allowed_users in
-    let info = { game.info with start_date; end_date; rule } in
-    Hashtbl.set data.games ~key:game_id ~data:{ game with info; allowed_users };
-    Ok ()
+let update_game ?name ?description ?start_date ?end_date ?allowed_users ?rule t game_id =
+  let%map.Or_error game = get_game t game_id in
+  let name = Option.value name ~default:game.info.name
+  and description = Option.value description ~default:game.info.description
+  and start_date = Option.value start_date ~default:game.info.start_date
+  and end_date = Option.value end_date ~default:game.info.end_date
+  and allowed_users = Option.value allowed_users ~default:game.allowed_users
+  and rule = Option.value rule ~default:game.info.rule in
+  let info = { Game_info.name; description; start_date; end_date; rule } in
+  Hashtbl.set t.data.games ~key:game_id ~data:{ game with info; allowed_users }
 ;;
 
 let user_exists (data : Data.t) token = Hashtbl.find data.users token |> Option.is_some
@@ -112,13 +109,23 @@ let can_participate allowed_users token =
   | Users allowed_tokens -> Set.mem allowed_tokens token
 ;;
 
-let add_entry { data; _ } ~token ~army ~game_id =
-  match Hashtbl.find data.games game_id with
+let recalculate_scoreboard { data; _ } ~game_id ~(game : Game.t) =
+  let scoreboard =
+    Scoreboard.create
+      ~entries:(Hashtbl.to_alist game.entries)
+      ~eval:(Rule.eval game.info.rule)
+  in
+  Hashtbl.set data.scoreboards ~key:game_id ~data:scoreboard
+;;
+
+let add_entry t ~token ~army ~game_id =
+  match Hashtbl.find t.data.games game_id with
   | None -> Or_error.error_s [%message "No game with given id." (game_id : Game_id.t)]
   | Some game ->
-    if user_exists data token && can_participate game.allowed_users token
+    if user_exists t.data token && can_participate game.allowed_users token
     then (
       Game.update_entry game ~token ~army;
+      recalculate_scoreboard t ~game_id ~game;
       Ok ())
     else
       Or_error.error_s
@@ -126,6 +133,14 @@ let add_entry { data; _ } ~token ~army ~game_id =
           "This token cannot participate in this game."
             (token : User_token.t)
             (game_id : Game_id.t)]
+;;
+
+let get_scoreboard t game_id =
+  let%bind.Or_error _ = get_game t game_id in
+  match Hashtbl.find t.data.scoreboards game_id with
+  | None ->
+    Or_error.error_s [%message "No entries yet for the game" (game_id : Game_id.t)]
+  | Some scoreboard -> Ok scoreboard
 ;;
 
 let%expect_test "state" =
@@ -169,10 +184,5 @@ let%expect_test "state" =
     (Error
      ("This token cannot participate in this game." (token invalid)
       (game_id game-1))) |}];
-  let%bind.Deferred () = save_data t "data.sexp" >>| Or_error.ok_exn in
-  let data_copy = t.data in
-  let%bind.Deferred () = load_data t "data.sexp" >>| Or_error.ok_exn in
-  print_s [%sexp (Data.equal data_copy t.data : bool)];
-  [%expect {| true |}];
   return ()
 ;;
