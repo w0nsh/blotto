@@ -5,6 +5,8 @@ module Kind = struct
     | Basic
     | First_win_tripled
   [@@deriving sexp, bin_io, equal]
+
+  let of_string str = Sexp.of_string str |> t_of_sexp
 end
 
 type t =
@@ -35,6 +37,13 @@ let eval t =
   match t.kind with
   | Basic -> eval_basic
   | First_win_tripled -> eval_first_win_tripled
+;;
+
+let arg_type =
+  Command.Arg_type.create (fun str ->
+    match Kind.of_string str with
+    | Basic -> basic
+    | First_win_tripled -> first_win_tripled)
 ;;
 
 let%expect_test "eval" =

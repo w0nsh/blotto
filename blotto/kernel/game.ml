@@ -56,11 +56,12 @@ let%expect_test "create" =
   [%expect
     {|
     (Ok
-     ((name "Game 1") (description "Some description of the rules.")
-      (start_date "1823-11-12 00:06:21.572612096Z")
-      (end_date "2116-02-20 23:53:38.427387903Z") (allowed_users Any)
-      (rule ((kind Basic) (description "Description of the basic rule.")))
-      (entries ())))
+     ((info
+       ((name "Game 1") (description "Some description of the rules.")
+        (start_date "1823-11-12 00:06:21.572612096Z")
+        (end_date "2116-02-20 23:53:38.427387903Z")
+        (rule ((kind Basic) (description "Description of the basic rule.")))))
+      (allowed_users Any) (entries ())))
     (Error
      ("Start date must be before end date."
       (start_date "2116-02-20 23:53:38.427387903Z")
@@ -76,10 +77,12 @@ let%expect_test "create" =
   [%expect
     {|
     (Ok
-     ((name "Game 1") (description "Some description of the rules.")
-      (start_date "1823-11-12 00:06:21.572612096Z")
-      (end_date "2116-02-20 23:53:38.427387903Z") (allowed_users Any)
-      (rule ((kind Basic) (description "Description of the basic rule.")))
+     ((info
+       ((name "Game 1") (description "Some description of the rules.")
+        (start_date "1823-11-12 00:06:21.572612096Z")
+        (end_date "2116-02-20 23:53:38.427387903Z")
+        (rule ((kind Basic) (description "Description of the basic rule.")))))
+      (allowed_users Any)
       (entries
        ((first-token (1 2 3 4 5 6 7 8 9 55))
         (second-token (10 10 10 10 10 10 10 10 10 10)))))) |}]

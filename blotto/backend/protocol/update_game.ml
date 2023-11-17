@@ -5,6 +5,8 @@ module T = struct
   module Query = struct
     type t =
       { id : Game_id.t
+      ; name : string option [@sexp.option]
+      ; description : string option [@sexp.option]
       ; start_date : Time_ns.Alternate_sexp.t option [@sexp.option]
       ; end_date : Time_ns.Alternate_sexp.t option [@sexp.option]
       ; allowed_users : Game.Allowed_users.t option [@sexp.option]
@@ -14,7 +16,7 @@ module T = struct
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
-      [%expect {| 57bfde3f7f19c1289d756b8ce61a54b4 |}]
+      [%expect {| 22287af22bf95257e3648246deb6a6b7 |}]
     ;;
   end
 
@@ -31,7 +33,7 @@ module T = struct
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
-      [%expect {| 89b87d429d685ec6ecfe3008150c676c |}]
+      [%expect {| 3368c56d0b3796831ed4206adce22541 |}]
     ;;
   end
 
