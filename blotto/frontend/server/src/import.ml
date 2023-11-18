@@ -1,4 +1,9 @@
 include struct
+  open Async_rpc_kernel
+  module Persistent_connection = Persistent_connection
+end
+
+include struct
   open Blotto_backend_protocol_lib
   module Get_games = Get_games
   module Submit_entry = Submit_entry

@@ -4,6 +4,7 @@
   core
   async
   async.log_extended
+  async_rpc_kernel
   async_rpc_websocket
   cohttp-async
   blotto_kernel_lib
