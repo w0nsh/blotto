@@ -4,7 +4,8 @@ open Import
 
 let get_games ~backend_connection =
   let f ~rpc_tag:_ _connection_state () =
-    Get_games.dispatch backend_connection () >>| Or_error.ok_exn
+    let%bind conn = Persistent_connection.Rpc.connected backend_connection in
+    Get_games.dispatch conn () >>| Or_error.ok_exn
   in
   Get_games.implement f
 ;;

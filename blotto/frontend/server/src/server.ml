@@ -1,5 +1,6 @@
 open! Core
 open! Async
+open Import
 
 let initialize_connection _initiated_from _addr _inet connection =
   { Connection_state.connection }
@@ -28,26 +29,27 @@ let handler ~body:_ _inet req =
 ;;
 
 let run ~config:{ Config.port; backend_address } =
-  let backend_address = Tcp.Where_to_connect.of_host_and_port backend_address in
-  let%map result =
-    Rpc.Connection.with_client backend_address (fun backend_connection ->
-      let hostname = Unix.gethostname () in
-      let%bind server =
-        let http_handler () = handler in
-        Rpc_websocket.Rpc.serve
-          ~on_handler_error:`Ignore
-          ~mode:`TCP
-          ~where_to_listen:(Tcp.Where_to_listen.of_port port)
-          ~http_handler
-          ~implementations:(Rpc_implementations.implementations ~backend_connection)
-          ~initial_connection_state:initialize_connection
-          ()
-      in
-      Log.Global.info_s [%message "Serving at " (hostname : string) (port : int)];
-      Cohttp_async.Server.close_finished server)
+  let backend_connection =
+    Persistent_connection.Rpc.create
+      ~server_name:"backend connection"
+      ~connect:(fun host_and_port ->
+        let address = Tcp.Where_to_connect.of_host_and_port host_and_port in
+        Rpc.Connection.client address >>| Or_error.of_exn_result)
+      ~address:(module Host_and_port) (* TODO: use [Tcp.Where_to_connect] here instead *)
+      (fun () -> Deferred.Or_error.return backend_address)
   in
-  match result with
-  | Ok () -> ()
-  | Error err ->
-    Log.Global.error_s [%message "Connection to the backend server failed " (err : exn)]
+  let hostname = Unix.gethostname () in
+  let%bind server =
+    let http_handler () = handler in
+    Rpc_websocket.Rpc.serve
+      ~on_handler_error:`Ignore
+      ~mode:`TCP
+      ~where_to_listen:(Tcp.Where_to_listen.of_port port)
+      ~http_handler
+      ~implementations:(Rpc_implementations.implementations ~backend_connection)
+      ~initial_connection_state:initialize_connection
+      ()
+  in
+  Log.Global.info_s [%message "Serving at " (hostname : string) (port : int)];
+  Cohttp_async.Server.close_finished server
 ;;
