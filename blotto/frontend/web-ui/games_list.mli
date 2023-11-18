@@ -1,3 +1,3 @@
 open Import
 
-val component : Get_games.Response.t Value.t -> N.t Computation.t
+val component : api:Api.t -> N.t Computation.t
