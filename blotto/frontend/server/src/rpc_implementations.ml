@@ -2,7 +2,7 @@ open! Core
 open! Async
 open Import
 
-let run_rpc
+let implement_rpc
   (type response_type query_type)
   (module M : Rpc_intf.S
     with type Response.t = response_type
@@ -17,10 +17,17 @@ let run_rpc
   M.implement f
 ;;
 
-let get_games = run_rpc (module Get_games)
-
 let implementations ~backend_connection =
   Rpc.Implementations.create_exn
-    ~implementations:[ get_games ~backend_connection ]
+    ~implementations:
+      [ implement_rpc (module Create_game) ~backend_connection
+      ; implement_rpc (module Get_games) ~backend_connection
+      ; implement_rpc (module Get_scoreboard) ~backend_connection
+      ; implement_rpc (module List_users) ~backend_connection
+      ; implement_rpc (module Register_user) ~backend_connection
+      ; implement_rpc (module Remove_game) ~backend_connection
+      ; implement_rpc (module Submit_entry) ~backend_connection
+      ; implement_rpc (module Update_game) ~backend_connection
+      ]
     ~on_unknown_rpc:`Continue
 ;;
