@@ -33,6 +33,7 @@ let downloader_with_refresh f =
   let%sub download =
     let%arr set_response = set_response in
     fun query ->
+      let%bind.Effect () = set_response None in
       let%bind.Effect response = f query in
       set_response (Some response)
   in

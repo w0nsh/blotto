@@ -28,13 +28,25 @@ let handler ~body:_ _inet req =
       Embedded_files.not_found_dot_html
 ;;
 
+let attempt_to_connect host_and_port =
+  Log.Global.info_s [%message "Attempting to connect to the backend server"];
+  let address = Tcp.Where_to_connect.of_host_and_port host_and_port in
+  let%map result = Rpc.Connection.client address >>| Or_error.of_exn_result in
+  let print_result () =
+    match result with
+    | Ok _ -> Log.Global.info_s [%message "Connected"]
+    | Error err -> Log.Global.error_s [%message "Connection failed " (err : Error.t)]
+  in
+  print_result ();
+  result
+;;
+
 let run ~config:{ Config.port; backend_address } =
   let backend_connection =
     Persistent_connection.Rpc.create
       ~server_name:"backend connection"
-      ~connect:(fun host_and_port ->
-        let address = Tcp.Where_to_connect.of_host_and_port host_and_port in
-        Rpc.Connection.client address >>| Or_error.of_exn_result)
+      ~retry_delay:(fun () -> Time_ns.Span.of_sec 5.0)
+      ~connect:attempt_to_connect
       ~address:(module Host_and_port) (* TODO: use [Tcp.Where_to_connect] here instead *)
       (fun () -> Deferred.Or_error.return backend_address)
   in
