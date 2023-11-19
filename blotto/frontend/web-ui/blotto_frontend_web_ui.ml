@@ -1,10 +1,29 @@
 open! Core
 open! Import
 
+let attempt_to_connect () =
+  log_s [%message "Attempting to connect to the backend server"];
+  let%map result = Rpc.Connection.client () in
+  let print_result () =
+    match result with
+    | Ok _ -> log_s [%message "Connected"]
+    | Error err -> log_s [%message "Connection failed " (err : Error.t)]
+  in
+  print_result ();
+  result
+;;
+
 let run () =
   Async_js.init ();
-  let%bind conn = Rpc.Connection.client_exn () in
-  let api = Api.create conn in
+  let server_connection =
+    Persistent_connection.Rpc.create
+      ~server_name:"server connection"
+      ~retry_delay:(fun () -> Time_ns.Span.of_sec 2.0)
+      ~connect:attempt_to_connect
+      ~address:(module Unit)
+      (fun () -> Deferred.Or_error.return ())
+  in
+  let api = Api.create server_connection in
   let app = App.component ~api in
   let theme =
     Kado.theme

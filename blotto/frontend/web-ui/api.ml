@@ -1,11 +1,12 @@
 open! Core
 open! Import
 
-type t = { connection : Rpc.Connection.t }
+type t = { connection : Persistent_connection.Rpc.t }
 
 let create connection = { connection }
 
 let get_games { connection } =
   Effect.of_deferred_fun (fun query ->
-    Get_games.dispatch connection query >>| Or_error.join)
+    let%bind conn = Persistent_connection.Rpc.connected connection in
+    Get_games.dispatch conn query >>| Or_error.join)
 ;;
