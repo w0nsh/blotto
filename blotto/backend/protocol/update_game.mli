@@ -21,7 +21,7 @@ module Response : sig
     [@@deriving sexp, bin_io]
   end
 
-  type t = Result.t Or_error.t [@@deriving sexp, bin_io]
+  type t = Result.t [@@deriving sexp, bin_io]
 end
 
 include Rpc_intf.S with module Query := Query and module Response := Response

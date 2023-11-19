@@ -17,7 +17,7 @@ module T = struct
   end
 
   module Response = struct
-    type t = unit Or_error.t [@@deriving sexp, bin_io]
+    type t = unit [@@deriving sexp, bin_io]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];

@@ -12,7 +12,7 @@ module T = struct
   end
 
   module Response = struct
-    type t = Game.t Game_id.Table.t Or_error.t [@@deriving sexp, bin_io]
+    type t = Game.t Game_id.Table.t [@@deriving sexp, bin_io]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
