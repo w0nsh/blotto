@@ -28,7 +28,7 @@ let games_response_component ~theme games_response =
 let downloader_with_refresh f =
   let open Bonsai.Let_syntax in
   let%sub response, set_response =
-    Bonsai.state_opt ~sexp_of_model:Get_games.Response.sexp_of_t ()
+    Bonsai.state_opt ~sexp_of_model:(Or_error.sexp_of_t Get_games.Response.sexp_of_t) ()
   in
   let%sub download =
     let%arr set_response = set_response in

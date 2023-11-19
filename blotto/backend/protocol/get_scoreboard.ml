@@ -12,7 +12,7 @@ module T = struct
   end
 
   module Response = struct
-    type t = Scoreboard.t Or_error.t [@@deriving sexp, bin_io]
+    type t = Scoreboard.t [@@deriving sexp, bin_io]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];

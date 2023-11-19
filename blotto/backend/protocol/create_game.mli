@@ -10,7 +10,7 @@ module Query : sig
 end
 
 module Response : sig
-  type t = unit Or_error.t [@@deriving sexp, bin_io]
+  type t = unit [@@deriving sexp, bin_io]
 end
 
 include Rpc_intf.S with module Query := Query and module Response := Response
