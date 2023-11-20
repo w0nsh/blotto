@@ -24,9 +24,9 @@ let games_response_component ~theme games_response =
     View.card theme (Error.to_string_hum err)
 ;;
 
-let component ~api =
+let component =
   let%sub theme = View.Theme.current in
-  let%sub games_response, refresh = Api.Get_games.dispatcher api in
+  let%sub games_response, refresh = Api.Get_games.dispatcher in
   let refresh = Value.map refresh ~f:(fun f -> f ()) in
   let%sub () = Bonsai.Edge.lifecycle ~on_activate:refresh () in
   let%sub games_list =

@@ -13,15 +13,14 @@ let respond_string ?flush ?headers ?status ~content_type s =
 
 let handler ~body:_ _inet req =
   let path = Uri.path (Cohttp.Request.uri req) in
-  match path with
-  | "" | "/" | "/index.html" ->
-    respond_string ~content_type:"text/html" Embedded_files.index_dot_html
-  | "/script.js" ->
+  match Route.of_string path with
+  | Script ->
     respond_string
       ~content_type:"application/javascript"
       Embedded_files.blotto_frontend_web_ui_dot_bc_dot_js
-  | "/style.css" -> respond_string ~content_type:"text/css" Embedded_files.style_dot_css
-  | _ ->
+  | Style -> respond_string ~content_type:"text/css" Embedded_files.style_dot_css
+  | Web_ui _ -> respond_string ~content_type:"text/html" Embedded_files.index_dot_html
+  | Not_found ->
     respond_string
       ~content_type:"text/html"
       ~status:`Not_found

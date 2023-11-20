@@ -8,7 +8,8 @@
   async_rpc_websocket
   cohttp-async
   blotto_kernel_lib
-  blotto_backend_protocol_lib)
+  blotto_backend_protocol_lib
+  blotto_frontend_protocol_lib)
  (preprocess
   (pps ppx_jane)))
 
