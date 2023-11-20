@@ -20,6 +20,7 @@ let create army =
 ;;
 
 let create_exn army = Or_error.ok_exn (create army)
+let to_array = Fn.id
 
 let fold2i army enemy_army ~f =
   let armies_zipped = Array.zip_exn army enemy_army in

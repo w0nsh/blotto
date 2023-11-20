@@ -4,14 +4,17 @@ module T = struct
   type t = string [@@deriving sexp, compare, equal, hash, bin_io]
 
   let create str =
-    if String.for_all str ~f:(fun c -> Char.is_lowercase c || Char.equal c '-')
-    then Ok str
-    else
+    if String.is_empty str
+    then Or_error.error_s [%message "Token cannot be empty"]
+    else if not (String.for_all str ~f:(fun c -> Char.is_lowercase c || Char.equal c '-'))
+    then
       Or_error.error_s
         [%message "Invliad token, only lowercase letters and hyphens allowed." str]
+    else Ok str
   ;;
 
   let create_exn str = Or_error.ok_exn (create str)
+  let to_string = Fn.id
 
   let%expect_test "create" =
     let token1 = create "siema-witam"
