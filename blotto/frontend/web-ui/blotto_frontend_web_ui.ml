@@ -2,7 +2,7 @@ open! Core
 open! Import
 
 let attempt_to_connect () =
-  log_s [%message "Attempting to connect to the backend server"];
+  log_s [%message "Attempting to connect to the frontend server"];
   let%map result = Rpc.Connection.client () in
   let print_result () =
     match result with

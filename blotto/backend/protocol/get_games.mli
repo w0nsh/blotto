@@ -6,7 +6,7 @@ module Query : sig
 end
 
 module Response : sig
-  type t = Game.t Game_id.Table.t Or_error.t [@@deriving sexp, bin_io]
+  type t = Game.t Game_id.Table.t [@@deriving sexp, bin_io]
 end
 
 include Rpc_intf.S with module Query := Query and module Response := Response

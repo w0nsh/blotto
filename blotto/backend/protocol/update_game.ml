@@ -27,7 +27,7 @@ module T = struct
       [@@deriving sexp, bin_io]
     end
 
-    type t = Result.t Or_error.t [@@deriving sexp, bin_io]
+    type t = Result.t [@@deriving sexp, bin_io]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];

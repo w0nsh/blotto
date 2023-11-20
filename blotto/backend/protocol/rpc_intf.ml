@@ -1,42 +1,24 @@
 open! Core
 open Async_kernel
 open Async_rpc_kernel
+include Rpc_intf_intf
 
-module type Arg = sig
-  module Query : sig
-    type t [@@deriving sexp, bin_io]
-  end
-
-  module Response : sig
-    type t [@@deriving sexp, bin_io]
-  end
-end
-
-module type S = sig
+module Make (Arg : Arg) :
+  S with module Query := Arg.Query and module Response := Arg.Response = struct
   include Arg
 
-  val dispatch : Rpc.Connection.t -> Query.t -> Response.t Deferred.Or_error.t
-  val dispatch_exn : Rpc.Connection.t -> Query.t -> Response.t Deferred.t
+  module Response_or_error = struct
+    type t = Response.t Or_error.t [@@deriving bin_io, sexp]
+  end
 
-  val implement
-    :  (rpc_tag:string -> 'a -> Query.t -> Response.t Deferred.t)
-    -> 'a Rpc.Implementation.t
-end
-
-module Make (M : sig
-    include Arg
-
-    val rpc_name : string
-  end) : S with module Query := M.Query and module Response := M.Response = struct
   let rpc =
     Rpc.Rpc.create
-      ~name:M.rpc_name
+      ~name:Arg.rpc_name
       ~version:1
-      ~bin_query:M.Query.bin_t
-      ~bin_response:M.Response.bin_t
+      ~bin_query:Arg.Query.bin_t
+      ~bin_response:Response_or_error.bin_t
   ;;
 
-  let dispatch = Rpc.Rpc.dispatch rpc
-  let dispatch_exn = Rpc.Rpc.dispatch_exn rpc
-  let implement f = Rpc.Rpc.implement rpc (f ~rpc_tag:M.rpc_name)
+  let dispatch conn query = Rpc.Rpc.dispatch rpc conn query >>| Or_error.join
+  let implement f = Rpc.Rpc.implement rpc (f ~rpc_tag:Arg.rpc_name)
 end

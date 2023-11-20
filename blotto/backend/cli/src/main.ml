@@ -32,9 +32,7 @@ let create_game_rpc_command =
        let%map.Deferred.Or_error response =
          Cli.create_game_rpc ~where_to_connect ~query:{ game_id; game }
        in
-       match response with
-       | Error error -> print_endline [%string "Error: %{Error.to_string_hum error}."]
-       | Ok response -> print_s [%sexp (response : unit)])
+       print_s [%sexp (response : unit)])
 ;;
 
 let get_games_rpc_command =
@@ -55,9 +53,7 @@ let get_games_rpc_command =
        let%map.Deferred.Or_error response =
          Cli.get_games_rpc ~where_to_connect ~query:()
        in
-       match response with
-       | Error error -> print_endline [%string "Error: %{Error.to_string_hum error}."]
-       | Ok response -> print_s [%sexp (response : Game.t Game_id.Table.t)])
+       print_s [%sexp (response : Game.t Game_id.Table.t)])
 ;;
 
 let command =

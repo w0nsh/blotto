@@ -24,25 +24,9 @@ let games_response_component ~theme games_response =
     View.card theme (Error.to_string_hum err)
 ;;
 
-(* TODO: move to api once an interface for the rpcs is ready *)
-let downloader_with_refresh f =
-  let open Bonsai.Let_syntax in
-  let%sub response, set_response =
-    Bonsai.state_opt ~sexp_of_model:Get_games.Response.sexp_of_t ()
-  in
-  let%sub download =
-    let%arr set_response = set_response in
-    fun query ->
-      let%bind.Effect () = set_response None in
-      let%bind.Effect response = f query in
-      set_response (Some response)
-  in
-  return (Value.both response download)
-;;
-
 let component ~api =
   let%sub theme = View.Theme.current in
-  let%sub games_response, refresh = downloader_with_refresh (Api.get_games api) in
+  let%sub games_response, refresh = Api.Get_games.dispatcher api in
   let refresh = Value.map refresh ~f:(fun f -> f ()) in
   let%sub () = Bonsai.Edge.lifecycle ~on_activate:refresh () in
   let%sub games_list =
