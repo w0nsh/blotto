@@ -37,5 +37,5 @@ let component =
   let%arr games_list = games_list
   and refresh = refresh
   and theme = theme in
-  View.vbox [ View.button theme ~on_click:refresh "refresh"; games_list ]
+  Pane.component [ View.button theme ~on_click:refresh "refresh"; games_list ]
 ;;

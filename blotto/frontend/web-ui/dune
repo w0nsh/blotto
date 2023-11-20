@@ -15,4 +15,4 @@
   bonsai.feather_icon
   bonsai.web_ui_form)
  (preprocess
-  (pps ppx_jane bonsai.ppx_bonsai js_of_ocaml-ppx)))
+  (pps ppx_jane bonsai.ppx_bonsai js_of_ocaml-ppx ppx_typed_fields)))
