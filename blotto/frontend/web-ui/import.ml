@@ -6,6 +6,16 @@ module N = Vdom.Node
 module A = Vdom.Attr
 
 include struct
+  open Bonsai
+  module Var = Var
+end
+
+include struct
+  open Blotto_frontend_protocol_lib
+  module Web_ui_route = Web_ui_route
+end
+
+include struct
   open Blotto_backend_protocol_lib
   module Get_games = Get_games
   module Submit_entry = Submit_entry

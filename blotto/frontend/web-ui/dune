@@ -10,8 +10,9 @@
   core
   bonsai.kado
   blotto_backend_protocol_lib
+  blotto_frontend_protocol_lib
   blotto_kernel_lib
   bonsai.feather_icon
   bonsai.web_ui_form)
  (preprocess
-  (pps ppx_jane bonsai.ppx_bonsai)))
+  (pps ppx_jane bonsai.ppx_bonsai js_of_ocaml-ppx)))

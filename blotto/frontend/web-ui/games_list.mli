@@ -1,3 +1,3 @@
 open Import
 
-val component : api:Api.t -> N.t Computation.t
+val component : N.t Computation.t

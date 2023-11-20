@@ -4,6 +4,11 @@ include struct
 end
 
 include struct
+  open Blotto_frontend_protocol_lib
+  module Route = Route
+end
+
+include struct
   open Blotto_backend_protocol_lib
   module Get_games = Get_games
   module Submit_entry = Submit_entry
