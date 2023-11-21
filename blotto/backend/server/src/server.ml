@@ -16,9 +16,14 @@ let unkown_rpc rpc_state ~rpc_tag ~version =
   `Close_connection
 ;;
 
+let get_game_implementation ~state ~rpc_tag rpc_state (game_id : Get_game.Query.t) =
+  log_rpc rpc_state rpc_tag;
+  State.get_game_info state game_id |> return
+;;
+
 let get_games_implementation ~state ~rpc_tag rpc_state (() : Get_games.Query.t) =
   log_rpc rpc_state rpc_tag;
-  Deferred.Or_error.return (State.get_games state)
+  Deferred.Or_error.return (State.get_game_infos state)
 ;;
 
 let create_game_implrementation ~state ~rpc_tag rpc_state (query : Create_game.Query.t) =
@@ -69,7 +74,8 @@ let submit_entry_implementation
 (* TODO: Get scoreboard. *)
 let implementations state =
   let implementations =
-    [ Get_games.implement (get_games_implementation ~state)
+    [ Get_game.implement (get_game_implementation ~state)
+    ; Get_games.implement (get_games_implementation ~state)
     ; Create_game.implement (create_game_implrementation ~state)
     ; Register_user.implement (register_user_implementation ~state)
     ; Update_game.implement (update_game_implementation ~state)

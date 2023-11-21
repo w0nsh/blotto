@@ -8,15 +8,11 @@ module Allowed_users : sig
 end
 
 type t =
-  { name : string
-  ; description : string
-  ; start_date : Time_ns.Alternate_sexp.t
-  ; end_date : Time_ns.Alternate_sexp.t
+  { info : Game_info.t
   ; allowed_users : Allowed_users.t
-  ; rule : Rule.t
   ; entries : Army.t User_token.Table.t
   }
-[@@deriving sexp, bin_io, equal]
+[@@deriving sexp, bin_io, equal, fields ~getters]
 
 val create
   :  name:string

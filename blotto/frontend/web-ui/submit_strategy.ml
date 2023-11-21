@@ -28,18 +28,15 @@ module T = struct
         ~unparse:User_token.to_string
     | Army ->
       let%sub form =
-        let%sub form =
-          let%sub subforms =
-            Computation.all
-              (List.init 10 ~f:(fun i ->
-                 let%sub textbox = Form.Elements.Textbox.int () in
-                 let%arr textbox = textbox in
-                 Form.label (Int.to_string (i + 1)) textbox))
-          in
-          let%arr subforms = subforms in
-          Form.all subforms
+        let%sub subforms =
+          Computation.all
+            (List.init 10 ~f:(fun i ->
+               let%sub textbox = Form.Elements.Textbox.int () in
+               let%arr textbox = textbox in
+               Form.label (Int.to_string (i + 1)) textbox))
         in
-        Form.Dynamic.with_default (Value.return (List.init 10 ~f:(fun _ -> 10))) form
+        let%arr subforms = subforms in
+        Form.all subforms
       in
       let%arr form = form in
       Form.project'
@@ -56,14 +53,14 @@ type t = T.t =
 
 let form = Form.Typed.Record.make (module T)
 
-let component =
+let component ~game_id =
   let%sub theme = View.Theme.current in
   let%sub form = form in
+  let%arr form = form
+  and theme = theme
+  and game_id = game_id in
   let on_submit { token; army } =
-    let%bind.Effect result =
-      Api.Submit_entry.dispatch_effect
-        { game_id = Game_id.t_of_sexp (Sexp.of_string "1"); token; army }
-    in
+    let%bind.Effect result = Api.Submit_entry.dispatch_effect { game_id; token; army } in
     let%map.Effect () =
       match result with
       | Error err -> Alert.effect (Error.to_string_hum err)
@@ -72,7 +69,5 @@ let component =
     ()
   in
   let on_submit = Form.Submit.create ~f:on_submit () in
-  let%arr form = form
-  and theme = theme in
   Form.view_as_vdom ~theme form ~on_submit
 ;;

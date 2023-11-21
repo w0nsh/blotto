@@ -21,6 +21,9 @@ module type Api = sig
   module Create_game :
     S with module Query := Create_game.Query and module Response := Create_game.Response
 
+  module Get_game :
+    S with module Query := Get_game.Query and module Response := Get_game.Response
+
   module Get_games :
     S with module Query := Get_games.Query and module Response := Get_games.Response
 

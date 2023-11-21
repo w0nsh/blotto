@@ -1,4 +1,5 @@
 type t =
+  | Game
   | Index
   | User
   | Not_found

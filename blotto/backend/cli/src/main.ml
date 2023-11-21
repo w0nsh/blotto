@@ -53,7 +53,7 @@ let get_games_rpc_command =
        let%map.Deferred.Or_error response =
          Cli.get_games_rpc ~where_to_connect ~query:()
        in
-       print_s [%sexp (response : Game.t Game_id.Table.t)])
+       print_s [%sexp (response : Game_info.t Game_id.Table.t)])
 ;;
 
 let command =

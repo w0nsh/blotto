@@ -1,3 +1,4 @@
+module Get_game = Get_game
 module Get_games = Get_games
 module Submit_entry = Submit_entry
 module Get_scoreboard = Get_scoreboard

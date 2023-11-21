@@ -36,13 +36,21 @@ let save_data t filename =
     Writer.save_sexp ~fsync:true ~hum:true filename (Data.sexp_of_t t.data))
 ;;
 
-let get_games { data; _ } = data.games
+let get_game_info { data = { games; _ }; _ } game_id =
+  match Hashtbl.find games game_id with
+  | None -> Or_error.error_s [%message "No game with id" (game_id : Game_id.t)]
+  | Some { info; _ } -> Ok info
+;;
+
+let get_game_infos { data = { games; _ }; _ } = Hashtbl.map games ~f:Game.info
 
 let get_game { data; _ } game_id =
   match Hashtbl.find data.games game_id with
   | None -> Or_error.error_s [%message "No game with id" (game_id : Game_id.t)]
   | Some game -> Ok game
 ;;
+
+let get_games { data = { games; _ }; _ } = games
 
 let remove_game { data; _ } game_id =
   match Hashtbl.find data.games game_id with
@@ -87,14 +95,12 @@ let update_game ?start_date ?end_date ?allowed_users ?rule { data; _ } game_id =
     Or_error.error_s
       [%message "No game with given id, cannot update." (game_id : Game_id.t)]
   | Some game ->
-    let start_date = Option.value start_date ~default:game.start_date
-    and end_date = Option.value end_date ~default:game.end_date
-    and allowed_users = Option.value allowed_users ~default:game.allowed_users
-    and rule = Option.value rule ~default:game.rule in
-    Hashtbl.set
-      data.games
-      ~key:game_id
-      ~data:{ game with start_date; end_date; allowed_users; rule };
+    let start_date = Option.value start_date ~default:game.info.start_date
+    and end_date = Option.value end_date ~default:game.info.end_date
+    and rule = Option.value rule ~default:game.info.rule
+    and allowed_users = Option.value allowed_users ~default:game.allowed_users in
+    let info = { game.info with start_date; end_date; rule } in
+    Hashtbl.set data.games ~key:game_id ~data:{ game with info; allowed_users };
     Ok ()
 ;;
 

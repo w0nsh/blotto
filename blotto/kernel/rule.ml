@@ -13,6 +13,7 @@ type t =
   }
 [@@deriving sexp, bin_io, equal]
 
+let description { description; _ } = description
 let basic = { kind = Basic; description = "Description of the basic rule." }
 
 let first_win_tripled =

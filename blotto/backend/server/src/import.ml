@@ -1,5 +1,6 @@
 include struct
   open Blotto_backend_protocol_lib
+  module Get_game = Get_game
   module Get_games = Get_games
   module Submit_entry = Submit_entry
   module Get_scoreboard = Get_scoreboard
@@ -16,6 +17,7 @@ include struct
   module User_token = User_token
   module User_data = User_data
   module Game = Game
+  module Game_info = Game_info
   module Game_id = Game_id
   module Scoreboard = Scoreboard
   module Army = Army
