@@ -7,12 +7,19 @@ let games_component games =
   let games_info =
     Hashtbl.to_alist games
     |> List.map ~f:(fun (game_id, game) ->
-      N.div
+      Pane.component
+        ~attrs:
+          [ Path.link_attr
+              { Path.And_query.path = "/game"
+              ; query = [ "game_id", [ Game_id.to_string game_id ] ]
+              }
+          ; A.class_ "game-list-entry"
+          ]
         [ N.h3 [ N.text (Game_id.to_string game_id) ]
-        ; N.p [ N.text (Game.sexp_of_t game |> Sexp.to_string_hum) ]
+        ; N.p [ N.text (Game_info.sexp_of_t game |> Sexp.to_string_hum) ]
         ])
   in
-  View.vbox [ N.div games_info ]
+  View.vbox ~cross_axis_alignment:Center games_info
 ;;
 
 let games_response_component ~theme games_response =
@@ -37,5 +44,7 @@ let component =
   let%arr games_list = games_list
   and refresh = refresh
   and theme = theme in
-  Pane.component [ View.button theme ~on_click:refresh "refresh"; games_list ]
+  Pane.component
+    ~attrs:[ A.class_ "index-view" ]
+    [ View.button theme ~on_click:refresh "refresh"; games_list ]
 ;;

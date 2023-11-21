@@ -1,6 +1,7 @@
 open! Core
 
 type t =
+  | Game
   | Index
   | User
   | Not_found
@@ -8,6 +9,7 @@ type t =
 let of_string str =
   match Utils.normalize_path str with
   | "" -> Index
+  | "/game" -> Game
   | "/user" -> User
   | _ -> Not_found
 ;;

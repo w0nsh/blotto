@@ -13,22 +13,36 @@ body {
     margin: 0;
 }
 
-.main-view {
+.site-container {
+    background-color: maroon;
+    color: white;
+    font-family: monospace;
     text-align: center;
-    background-color: brown;
     position: absolute;
     height: 100%;
     width: 100%;
     top: 0;
     left: 0;
+    overflow: scroll;
+}
+
+.view-container {
+    display: flex;
+    justify-content: center;
 }
 
 .pane {
-    width: fit-content;
-    border: solid whitesmoke;
+    border: 3px solid whitesmoke;
     box-shadow: 1px 1px whitesmoke;
     border-radius: 5px;
-    min-width: 300px;
     padding: 10px;
     margin: 20px;
+}
+
+.game-list-entry:hover {
+    box-shadow: 3px 3px whitesmoke;
+}
+
+.index-view {
+    width: 500px;
 }

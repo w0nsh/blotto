@@ -21,6 +21,7 @@ let implementations ~backend_connection =
   Rpc.Implementations.create_exn
     ~implementations:
       [ implement_rpc (module Create_game) ~backend_connection
+      ; implement_rpc (module Get_game) ~backend_connection
       ; implement_rpc (module Get_games) ~backend_connection
       ; implement_rpc (module Get_scoreboard) ~backend_connection
       ; implement_rpc (module List_users) ~backend_connection

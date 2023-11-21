@@ -3,7 +3,7 @@ open Blotto_kernel_lib
 
 module T = struct
   module Query = struct
-    type t = unit [@@deriving sexp, bin_io]
+    type t = Game_id.t [@@deriving sexp, bin_io]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
@@ -12,7 +12,7 @@ module T = struct
   end
 
   module Response = struct
-    type t = Game_info.t Game_id.Table.t [@@deriving sexp, bin_io]
+    type t = Game_info.t [@@deriving sexp, bin_io]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
@@ -20,7 +20,7 @@ module T = struct
     ;;
   end
 
-  let rpc_name = "get_games"
+  let rpc_name = "get_game"
 end
 
 include T

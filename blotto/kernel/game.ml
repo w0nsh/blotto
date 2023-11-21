@@ -8,15 +8,11 @@ module Allowed_users = struct
 end
 
 type t =
-  { name : string
-  ; description : string
-  ; start_date : Time_ns.Alternate_sexp.t
-  ; end_date : Time_ns.Alternate_sexp.t
+  { info : Game_info.t
   ; allowed_users : Allowed_users.t
-  ; rule : Rule.t
   ; entries : Army.t User_token.Table.t
   }
-[@@deriving sexp, bin_io, equal]
+[@@deriving sexp, bin_io, equal, fields ~getters]
 
 let create ~name ~description ~start_date ~end_date ~allowed_users ~rule =
   if Time_ns.( > ) start_date end_date
@@ -28,12 +24,8 @@ let create ~name ~description ~start_date ~end_date ~allowed_users ~rule =
           (end_date : Time_ns.Alternate_sexp.t)]
   else
     Ok
-      { name
-      ; description
-      ; start_date
-      ; end_date
+      { info = { name; description; start_date; end_date; rule }
       ; allowed_users
-      ; rule
       ; entries = User_token.Table.create ()
       }
 ;;
