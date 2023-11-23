@@ -58,7 +58,7 @@ let get_ui_scoreboard_implementation
   let entries = Scoreboard.to_list scoreboard in
   List.map entries ~f:(fun (token, army, score) ->
     let%map.Or_error user_info = State.get_user_info state token in
-    { Entry.army; score; user_data = user_info.data })
+    { Ui_entry.army; score; user_data = user_info.data })
   |> Or_error.all
   |> return
 ;;

@@ -41,3 +41,8 @@ let link_attr and_query =
     ; A.style (Css_gen.create ~field:"cursor" ~value:"pointer")
     ]
 ;;
+
+let game_id_query =
+  let game_id_of_string s = Option.try_with (fun () -> Game_id.of_string s) in
+  Value.map (query "game_id") ~f:(Option.bind ~f:game_id_of_string)
+;;

@@ -6,7 +6,7 @@ module Query : sig
 end
 
 module Response : sig
-  type t = Entry.t list [@@deriving sexp, bin_io]
+  type t = Ui_entry.t list [@@deriving sexp, bin_io]
 end
 
 include Rpc_intf.S with module Query := Query and module Response := Response

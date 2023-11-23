@@ -12,7 +12,7 @@ module T = struct
   end
 
   module Response = struct
-    type t = Entry.t list [@@deriving sexp, bin_io]
+    type t = Ui_entry.t list [@@deriving sexp, bin_io]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];

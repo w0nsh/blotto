@@ -20,15 +20,11 @@ let implement_rpc
 let implementations ~backend_connection =
   Rpc.Implementations.create_exn
     ~implementations:
-      [ implement_rpc (module Create_game) ~backend_connection
-      ; implement_rpc (module Get_game) ~backend_connection
+      [ implement_rpc (module Get_game) ~backend_connection
       ; implement_rpc (module Get_games) ~backend_connection
-      ; implement_rpc (module Get_scoreboard) ~backend_connection
-      ; implement_rpc (module List_users) ~backend_connection
+      ; implement_rpc (module Get_ui_scoreboard) ~backend_connection
       ; implement_rpc (module Register_user) ~backend_connection
-      ; implement_rpc (module Remove_game) ~backend_connection
       ; implement_rpc (module Submit_entry) ~backend_connection
-      ; implement_rpc (module Update_game) ~backend_connection
       ]
     ~on_unknown_rpc:`Continue
 ;;

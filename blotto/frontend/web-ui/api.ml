@@ -55,12 +55,8 @@ module Make (Arg : Rpc_intf.S) = struct
   ;;
 end
 
-module Create_game = Make (Create_game)
 module Get_game = Make (Get_game)
 module Get_games = Make (Get_games)
-module Get_scoreboard = Make (Get_scoreboard)
-module List_users = Make (List_users)
+module Get_ui_scoreboard = Make (Get_ui_scoreboard)
 module Register_user = Make (Register_user)
-module Remove_game = Make (Remove_game)
 module Submit_entry = Make (Submit_entry)
-module Update_game = Make (Update_game)

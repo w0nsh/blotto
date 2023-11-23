@@ -1,6 +1,7 @@
 type t =
   | Game
   | Index
+  | Scoreboard
   | User
   | Not_found
 
