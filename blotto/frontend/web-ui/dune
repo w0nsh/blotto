@@ -8,6 +8,7 @@
   async_kernel
   async_js
   core
+  core_kernel.composition_infix
   bonsai.kado
   blotto_backend_protocol_lib
   blotto_frontend_protocol_lib

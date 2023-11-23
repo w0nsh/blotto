@@ -35,11 +35,7 @@ let view ~game_id =
 ;;
 
 let component =
-  let game_id =
-    let game_id_of_string s = Option.try_with (fun () -> Game_id.of_string s) in
-    Value.map (Path.query "game_id") ~f:(Option.bind ~f:game_id_of_string)
-  in
-  match%sub game_id with
+  match%sub Path.game_id_query with
   | None -> Bonsai.const (N.text "invalid game id")
   | Some game_id -> view ~game_id
 ;;

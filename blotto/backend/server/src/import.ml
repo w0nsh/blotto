@@ -24,5 +24,5 @@ include struct
   module Army = Army
   module Rule = Rule
   module Email = Email
-  module Entry = Entry
+  module Ui_entry = Ui_entry
 end

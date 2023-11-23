@@ -44,5 +44,10 @@ body {
 }
 
 .index-view {
+    /* width: 500px; */
+}
+
+
+.games-list {
     width: 500px;
 }

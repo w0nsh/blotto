@@ -9,5 +9,6 @@ let component =
   | Game -> Game_view.component
   | Index -> Index_view.component
   | User -> Bonsai.const (N.text "not implemented")
+  | Scoreboard -> Scoreboard_view.component
   | _ -> Not_found.component
 ;;

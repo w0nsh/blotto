@@ -12,3 +12,4 @@ val path : string Value.t
 val query : string -> string option Value.t
 val set_route : And_query.t -> unit Ui_effect.t
 val link_attr : And_query.t -> A.t
+val game_id_query : Game_id.t option Value.t
