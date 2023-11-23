@@ -36,14 +36,6 @@ let save_data t filename =
     Writer.save_sexp ~fsync:true ~hum:true filename (Data.sexp_of_t t.data))
 ;;
 
-let get_game_info { data = { games; _ }; _ } game_id =
-  match Hashtbl.find games game_id with
-  | None -> Or_error.error_s [%message "No game with id" (game_id : Game_id.t)]
-  | Some { info; _ } -> Ok info
-;;
-
-let get_game_infos { data = { games; _ }; _ } = Hashtbl.map games ~f:Game.info
-
 let get_game { data; _ } game_id =
   match Hashtbl.find data.games game_id with
   | None -> Or_error.error_s [%message "No game with id" (game_id : Game_id.t)]
@@ -52,15 +44,25 @@ let get_game { data; _ } game_id =
 
 let get_games { data = { games; _ }; _ } = games
 
-let remove_game { data; _ } game_id =
-  match Hashtbl.find data.games game_id with
-  | None -> Or_error.error_s [%message "No game with id" (game_id : Game_id.t)]
-  | Some _ ->
-    Hashtbl.remove data.games game_id;
-    Ok ()
+let get_game_info t game_id =
+  let%map.Or_error game = get_game t game_id in
+  game.info
+;;
+
+let get_game_infos { data = { games; _ }; _ } = Hashtbl.map games ~f:Game.info
+
+let remove_game t game_id =
+  let%map.Or_error _ = get_game t game_id in
+  Hashtbl.remove t.data.games game_id
 ;;
 
 let list_users { data; _ } = data.users
+
+let get_user_info { data; _ } token =
+  match Hashtbl.find data.users token with
+  | None -> Or_error.error_s [%message "No user with given token" (token : User_token.t)]
+  | Some user_info -> Ok user_info
+;;
 
 let get_unique_token { data; token_generator } =
   let rec get_unique_token_aux () =

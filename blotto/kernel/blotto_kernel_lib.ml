@@ -7,3 +7,4 @@ module Scoreboard = Scoreboard
 module Army = Army
 module Rule = Rule
 module Email = Email
+module Entry = Entry

@@ -14,6 +14,7 @@ val get_game_infos : t -> Game_info.t Game_id.Table.t
 val get_game : t -> Game_id.t -> Game.t Or_error.t
 val get_games : t -> Game.t Game_id.Table.t
 val get_scoreboard : t -> Game_id.t -> Scoreboard.t Or_error.t
+val get_user_info : t -> User_token.t -> User_info.t Or_error.t
 val remove_game : t -> Game_id.t -> unit Or_error.t
 val list_users : t -> User_info.t User_token.Table.t
 

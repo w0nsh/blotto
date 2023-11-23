@@ -18,6 +18,8 @@ let create ~entries ~eval =
   scoreboard
 ;;
 
+let to_list t = Hashtbl.to_alist t |> List.map ~f:(fun (a, (b, c)) -> a, b, c)
+
 let%expect_test "create" =
   let tokens = List.map [ "tok-a"; "tok-b"; "tok-c"; "tok-d" ] ~f:User_token.create_exn in
   let armies =

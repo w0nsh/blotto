@@ -47,6 +47,22 @@ let get_scoreboard_implementation
   State.get_scoreboard state query |> return
 ;;
 
+let get_ui_scoreboard_implementation
+  ~state
+  ~rpc_tag
+  rpc_state
+  (query : Get_ui_scoreboard.Query.t)
+  =
+  log_rpc rpc_state rpc_tag;
+  let%bind.Deferred.Or_error scoreboard = State.get_scoreboard state query |> return in
+  let entries = Scoreboard.to_list scoreboard in
+  List.map entries ~f:(fun (token, army, score) ->
+    let%map.Or_error user_info = State.get_user_info state token in
+    { Entry.army; score; user_data = user_info.data })
+  |> Or_error.all
+  |> return
+;;
+
 let update_game_implementation
   ~state
   ~rpc_tag
@@ -102,6 +118,7 @@ let implementations state =
     ; List_users.implement (list_users_implementation ~state)
     ; Submit_entry.implement (submit_entry_implementation ~state)
     ; Get_scoreboard.implement (get_scoreboard_implementation ~state)
+    ; Get_ui_scoreboard.implement (get_ui_scoreboard_implementation ~state)
     ]
   in
   Rpc.Implementations.create_exn ~implementations ~on_unknown_rpc:(`Call unkown_rpc)
