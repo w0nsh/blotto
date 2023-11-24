@@ -14,9 +14,7 @@ let view_scoreboard scoreboard =
          |> List.map ~f:Int.to_string
          |> String.concat ~sep:", ")
     in
-    let render_user_data _ user_data =
-      View.text (User_data.name user_data ^ " " ^ User_data.surname user_data)
-    in
+    let render_user_data _ user_data = View.text (User_data.name user_data) in
     let render_score _ = N.textf "%.3f" in
     [ View.Table.Col.make "User" ~get:Ui_entry.user_data ~render:render_user_data
     ; View.Table.Col.make "Army" ~get:Ui_entry.army ~render:render_army

@@ -161,15 +161,12 @@ let register_user_rpc_command =
          ~doc:"STRING Host to connect to"
      and port = flag "port" (optional_with_default 8080 int) ~doc:"INT Port to connect to"
      and name = anon ("name" %: string)
-     and surname = anon ("surname" %: string)
      and email = anon ("email" %: string) in
      fun () ->
        let where_to_connect =
          Tcp.Where_to_connect.of_host_and_port (Host_and_port.create ~host ~port)
        in
-       let%bind.Deferred.Or_error user_data =
-         User_data.create ~name ~surname ~email |> return
-       in
+       let%bind.Deferred.Or_error user_data = User_data.create ~name ~email |> return in
        let%map.Deferred.Or_error response =
          Cli.register_user_rpc ~where_to_connect ~query:user_data
        in
