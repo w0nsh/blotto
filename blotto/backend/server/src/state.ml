@@ -121,20 +121,25 @@ let recalculate_scoreboard { data; _ } ~game_id ~(game : Game.t) =
 ;;
 
 let add_entry t ~token ~army ~game_id =
-  match Hashtbl.find t.data.games game_id with
-  | None -> Or_error.error_s [%message "No game with given id." (game_id : Game_id.t)]
-  | Some game ->
-    if user_exists t.data token && can_participate game.allowed_users token
-    then (
-      Game.update_entry game ~token ~army;
-      recalculate_scoreboard t ~game_id ~game;
-      Ok ())
-    else
-      Or_error.error_s
-        [%message
-          "This token cannot participate in this game."
-            (token : User_token.t)
-            (game_id : Game_id.t)]
+  let%bind.Or_error game = get_game t game_id in
+  if not (user_exists t.data token && can_participate game.allowed_users token)
+  then
+    Or_error.error_s
+      [%message
+        "This token cannot participate in this game."
+          (token : User_token.t)
+          (game_id : Game_id.t)]
+  else if Time_ns.(now () > game.info.end_date)
+  then
+    Or_error.error_s
+      [%message
+        "Game has already finished, cannot submit."
+          (game_id : Game_id.t)
+          (game.info.end_date : Time_ns.Alternate_sexp.t)]
+  else (
+    Game.update_entry game ~token ~army;
+    recalculate_scoreboard t ~game_id ~game;
+    Ok ())
 ;;
 
 let get_scoreboard t game_id =
