@@ -182,9 +182,7 @@ let%expect_test "state" =
      ("This token cannot participate in this game." (token test-token)
       (game_id game-1))) |}];
   let user_token =
-    create_user
-      t
-      (User_data.create_exn ~name:"Franciszek" ~surname:"Malinka" ~email:"a@b.c")
+    create_user t (User_data.create_exn ~name:"Franciszek Malinka" ~email:"a@b.c")
     |> Or_error.ok_exn
   in
   add_entry t ~token:user_token ~army ~game_id |> Or_error.ok_exn;

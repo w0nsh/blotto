@@ -5,7 +5,6 @@ open Bonsai.Let_syntax
 module T = struct
   type t =
     { name : string
-    ; surname : string
     ; email : string
     }
   [@@deriving typed_fields]
@@ -14,7 +13,6 @@ module T = struct
     `Computed
       (let label : type a. a Typed_field.t -> string = function
          | Name -> "Name"
-         | Surname -> "Surname"
          | Email -> "Email address"
        in
        label)
@@ -22,14 +20,12 @@ module T = struct
 
   let form_for_field : type a. a Typed_field.t -> a Form.t Computation.t = function
     | Name -> Form.Elements.Textbox.string ()
-    | Surname -> Form.Elements.Textbox.string ()
     | Email -> Form.Elements.Textbox.string ()
   ;;
 end
 
 type t = T.t =
   { name : string
-  ; surname : string
   ; email : string
   }
 
@@ -38,10 +34,9 @@ let form =
   let%arr form = form in
   Form.project'
     form
-    ~parse:(fun { name; surname; email } -> User_data.create ~name ~surname ~email)
+    ~parse:(fun { name; email } -> User_data.create ~name ~email)
     ~unparse:(fun user_data ->
       { name = User_data.name user_data
-      ; surname = User_data.surname user_data
       ; email = User_data.email user_data |> Email.to_string
       })
 ;;
