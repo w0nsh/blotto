@@ -63,9 +63,8 @@ let component =
     | Some games_response -> games_response_component ~theme games_response
   in
   let%arr games_list = games_list
-  and refresh = refresh
-  and theme = theme in
+  and refresh = refresh in
   Pane.component
     ~attrs:[ A.class_ "games-list" ]
-    [ View.button theme ~on_click:refresh "refresh"; games_list ]
+    [ N.button ~attrs:[ A.on_click (fun _ -> refresh) ] [ N.text "refresh" ]; games_list ]
 ;;

@@ -46,20 +46,35 @@ let form =
       })
 ;;
 
+let user_token_view token =
+  match%sub token with
+  | None -> Bonsai.const N.none
+  | Some token ->
+    let%arr token = token in
+    N.div
+      [ N.label [ N.text "Token" ]
+      ; N.input ~attrs:[ A.readonly; A.type_ "text"; A.value token ] ()
+      ]
+;;
+
 let component =
   let%sub theme = View.Theme.current in
+  let%sub token, set_token = Bonsai.state_opt ~sexp_of_model:String.sexp_of_t () in
+  let%sub token_view = user_token_view token in
   let%sub form = form in
   let%arr form = form
+  and set_token = set_token
+  and token_view = token_view
   and theme = theme in
   let on_submit user_data =
     let%bind.Effect result = Api.Register_user.dispatch_effect user_data in
     let%map.Effect () =
       match result with
       | Error err -> Alert.effect (Error.to_string_hum err)
-      | Ok _ -> Effect.return ()
+      | Ok token -> set_token (Some (User_token.to_string token))
     in
     ()
   in
   let on_submit = Form.Submit.create ~f:on_submit () in
-  Form.view_as_vdom ~theme form ~on_submit
+  N.div [ Form.view_as_vdom ~theme form ~on_submit; token_view ]
 ;;

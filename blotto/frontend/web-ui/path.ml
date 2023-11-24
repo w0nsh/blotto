@@ -14,6 +14,15 @@ let get_uri () =
 ;;
 
 let uri_var = Var.create (get_uri ())
+
+let () =
+  let open Js_of_ocaml in
+  Dom_html.window##.onpopstate
+  := Dom_html.handler (fun _ ->
+       Var.set uri_var (get_uri ());
+       Js._false)
+;;
+
 let uri = Var.value uri_var
 let path = Value.map uri ~f:Uri.path
 let query key = Value.map uri ~f:(fun uri -> Uri.get_query_param uri key)
