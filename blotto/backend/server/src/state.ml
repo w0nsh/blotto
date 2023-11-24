@@ -6,6 +6,7 @@ module Data = struct
   type t =
     { games : Game.t Game_id.Table.t
     ; users : User_info.t User_token.Table.t
+    ; mutable emails : Email.Set.t
     ; scoreboards : Scoreboard.t Game_id.Table.t
     }
   [@@deriving sexp, equal]
@@ -21,6 +22,7 @@ let init ?seed () =
       { games = Game_id.Table.create ()
       ; users = User_token.Table.create ()
       ; scoreboards = Game_id.Table.create ()
+      ; emails = Email.Set.empty
       }
   ; token_generator = User_token_generator.init ?seed ()
   }
@@ -74,13 +76,20 @@ let get_unique_token { data; token_generator } =
   get_unique_token_aux ()
 ;;
 
-let create_user t user_data =
-  let token = get_unique_token t in
-  Hashtbl.set
-    t.data.users
-    ~key:token
-    ~data:{ User_info.data = user_data; creation_time = Time_ns.now () };
-  Ok token
+let create_user t (user_data : User_data.t) =
+  let email = User_data.email user_data in
+  if Set.mem t.data.emails email
+  then
+    Or_error.error_s
+      [%message "Already created user with this email address." (email : Email.t)]
+  else (
+    let token = get_unique_token t in
+    Hashtbl.set
+      t.data.users
+      ~key:token
+      ~data:{ User_info.data = user_data; creation_time = Time_ns.now () };
+    t.data.emails <- Set.add t.data.emails email;
+    Ok token)
 ;;
 
 let create_game { data; _ } id game =
