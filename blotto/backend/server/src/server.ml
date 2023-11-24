@@ -124,11 +124,38 @@ let implementations state =
   Rpc.Implementations.create_exn ~implementations ~on_unknown_rpc:(`Call unkown_rpc)
 ;;
 
+let init_state filename =
+  let state = State.init () in
+  let%map.Deferred.Or_error () =
+    match filename with
+    | None -> Deferred.Or_error.ok_unit
+    | Some filename ->
+      Log.Global.info_s
+        [%message "Loading initial state from file" (filename : Filename.t)];
+      State.load_data state filename
+  in
+  state
+;;
+
 let run (config : Config.t) =
   let where_to_listen = Tcp.Where_to_listen.of_port config.port in
-  let state = State.init () in
   Log.Global.info_s
-    [%message "Spinning up server" (where_to_listen : Tcp.Where_to_listen.inet)];
+    [%message
+      "Spinning up server"
+        (config : Config.t)
+        (where_to_listen : Tcp.Where_to_listen.inet)];
+  let%bind state =
+    match%map init_state config.state_file with
+    | Error error ->
+      Log.Global.error_s
+        [%message
+          "Cannot load server state from file (this is expected on the first run of the \
+           server)"
+            (error : Error.t)
+            (config : Config.t)];
+      State.init ()
+    | Ok state -> state
+  in
   let%bind server =
     Rpc.Connection.serve
       ~implementations:(implementations state)
@@ -137,5 +164,21 @@ let run (config : Config.t) =
       ()
   in
   ignore server;
+  let%bind.Deferred.Or_error () =
+    match config.persist_state with
+    | false -> Deferred.Or_error.ok_unit
+    | true ->
+      (match config.state_file with
+       | None ->
+         Deferred.Or_error.error_s
+           [%message "Cannot persist state if no state file given." (config : Config.t)]
+       | Some state_file ->
+         Deferred.forever () (fun () ->
+           let%bind () = Async.after (Time_float.Span.of_sec 10.) in
+           Log.Global.debug_s
+             [%message "Persisting server state." (state_file : Filename.t)];
+           State.save_data state state_file >>| Or_error.ok_exn);
+         Deferred.Or_error.ok_unit)
+  in
   Deferred.never ()
 ;;
