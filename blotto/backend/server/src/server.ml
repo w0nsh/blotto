@@ -54,13 +54,22 @@ let get_ui_scoreboard_implementation
   (query : Get_ui_scoreboard.Query.t)
   =
   log_rpc rpc_state rpc_tag;
-  let%bind.Deferred.Or_error scoreboard = State.get_scoreboard state query |> return in
-  let entries = Scoreboard.to_list scoreboard in
-  List.map entries ~f:(fun (token, army, score) ->
-    let%map.Or_error user_info = State.get_user_info state token in
-    { Ui_entry.army; score; user_data = user_info.data })
-  |> Or_error.all
-  |> return
+  let%bind.Deferred.Or_error game = State.get_game state query |> return in
+  if Time_ns.(now () < game.info.end_date)
+  then
+    Or_error.error_s
+      [%message
+        "Cannot show scoreboard before end of a game."
+          (game.info.end_date : Time_ns.Alternate_sexp.t)]
+    |> return
+  else (
+    let%bind.Deferred.Or_error scoreboard = State.get_scoreboard state query |> return in
+    let entries = Scoreboard.to_list scoreboard in
+    List.map entries ~f:(fun (token, army, score) ->
+      let%map.Or_error user_info = State.get_user_info state token in
+      { Ui_entry.army; score; user_data = user_info.data })
+    |> Or_error.all
+    |> return)
 ;;
 
 let update_game_implementation
