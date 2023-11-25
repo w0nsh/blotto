@@ -2,6 +2,21 @@ open! Core
 open Async
 open Import
 
+let load_token_list filename =
+  let%bind.Deferred.Or_error tokens =
+    Deferred.Or_error.try_with (fun () -> Reader.file_lines filename)
+  in
+  List.map tokens ~f:User_token.create |> Or_error.all |> return
+;;
+
+let get_allowed_users filename =
+  match filename with
+  | None -> Deferred.Or_error.return Game.Allowed_users.Any
+  | Some filename ->
+    let%map.Deferred.Or_error tokens = load_token_list filename in
+    Game.Allowed_users.Users (User_token.Set.of_list tokens)
+;;
+
 let create_game_rpc_command =
   Command.async_or_error
     ~summary:"Create new game"
@@ -14,6 +29,11 @@ let create_game_rpc_command =
      and game_id = flag "game-id" (required Game_id.arg_type) ~doc:"STRING Game id"
      and name = flag "name" (required string) ~doc:"STRING name"
      and description = flag "description" (required string) ~doc:"STRING description"
+     and allowed_users =
+       flag
+         "allowed-users"
+         (optional Filename_unix.arg_type)
+         ~doc:"FILENAME file with allowed tokens for this game"
      and start_date =
        flag
          "start-date"
@@ -25,8 +45,9 @@ let create_game_rpc_command =
        let where_to_connect =
          Tcp.Where_to_connect.of_host_and_port (Host_and_port.create ~host ~port)
        in
+       let%bind.Deferred.Or_error allowed_users = get_allowed_users allowed_users in
        let%bind.Deferred.Or_error game =
-         Game.create ~name ~description ~start_date ~end_date ~allowed_users:Any ~rule
+         Game.create ~name ~description ~start_date ~end_date ~allowed_users ~rule
          |> return
        in
        let%map.Deferred.Or_error response =
@@ -46,6 +67,11 @@ let update_game_rpc_command =
      and port = flag "port" (optional_with_default 8080 int) ~doc:"INT Port to connect to"
      and game_id = flag "game-id" (required Game_id.arg_type) ~doc:"STRING Game id"
      and name = flag "name" (optional string) ~doc:"STRING name"
+     and allowed_users =
+       flag
+         "allowed-users"
+         (optional Filename_unix.arg_type)
+         ~doc:"FILENAME allowed user tokens"
      and description = flag "description" (optional string) ~doc:"STRING description"
      and start_date =
        flag "start-date" (optional Time_ns_unix.arg_type) ~doc:"DATE start date"
@@ -55,6 +81,13 @@ let update_game_rpc_command =
        let where_to_connect =
          Tcp.Where_to_connect.of_host_and_port (Host_and_port.create ~host ~port)
        in
+       let%bind.Deferred.Or_error allowed_users =
+         match allowed_users with
+         | None -> Deferred.Or_error.return None
+         | Some filename ->
+           let%map.Deferred.Or_error tokens = load_token_list filename in
+           Some (Game.Allowed_users.Users (User_token.Set.of_list tokens))
+       in
        let query =
          { Update_game.Query.id = game_id
          ; name
@@ -62,7 +95,7 @@ let update_game_rpc_command =
          ; start_date
          ; end_date
          ; rule
-         ; allowed_users = None
+         ; allowed_users
          }
        in
        let%bind.Deferred response = Cli.update_game_rpc ~where_to_connect ~query in
