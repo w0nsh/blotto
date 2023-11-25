@@ -1,15 +1,6 @@
 open! Core
 open Import
 
-module And_query : sig
-  type t =
-    { path : string
-    ; query : (string * string list) list
-    }
-end
-
-val path : string Value.t
-val query : string -> string option Value.t
-val set_route : And_query.t -> unit Ui_effect.t
-val link_attr : And_query.t -> A.t
-val game_id_query : Game_id.t option Value.t
+val route : Web_ui_route.t Value.t
+val set_route : Web_ui_route.t -> unit Ui_effect.t
+val link_attr : Web_ui_route.t -> A.t

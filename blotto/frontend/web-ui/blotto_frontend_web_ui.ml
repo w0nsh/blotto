@@ -3,7 +3,7 @@ open! Import
 
 let run () =
   Async_js.init ();
-  let app = App.component ~component:Router.component in
+  let app = App.component in
   let theme =
     Kado.theme
       ~style:Kado.Style.Light

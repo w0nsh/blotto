@@ -34,8 +34,8 @@ let view ~game_id =
      | Ok game_info -> view_game_info ~game_id ~game_info)
 ;;
 
-let component =
-  match%sub Path.game_id_query with
+let component ~game_id =
+  match%sub game_id with
   | None -> Bonsai.const (N.text "invalid game id")
   | Some game_id -> view ~game_id
 ;;

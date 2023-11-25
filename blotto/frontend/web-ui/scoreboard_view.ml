@@ -46,8 +46,8 @@ let view ~game_id =
        Pane.component [ N.h1 [ N.text (Game_id.to_string game_id); scoreboard ] ])
 ;;
 
-let component =
-  match%sub Path.game_id_query with
+let component ~game_id =
+  match%sub game_id with
   | None -> Bonsai.const (N.text "invalid game id")
   | Some game_id -> view ~game_id
 ;;

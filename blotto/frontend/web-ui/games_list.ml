@@ -8,9 +8,9 @@ let games_component ~active games =
       Pane.component
         ~attrs:
           [ Path.link_attr
-              { Path.And_query.path = (if active then "/game" else "/scoreboard")
-              ; query = [ "game_id", [ Game_id.to_string game_id ] ]
-              }
+              (if active
+               then Web_ui_route.Game (Some game_id)
+               else Web_ui_route.Scoreboard (Some game_id))
           ; A.class_ "game-list-entry"
           ]
         [ N.h3 [ N.text (Game_id.to_string game_id) ]

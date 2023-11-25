@@ -26,9 +26,11 @@ body {
     overflow: auto;
 }
 
-.view-container {
+.content-container {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: left;
+    padding: 0 10%;
 }
 
 .pane {
@@ -43,11 +45,14 @@ body {
     box-shadow: 3px 3px whitesmoke;
 }
 
-.index-view {
-    /* width: 500px; */
+.navigation-column {
+    width: 400px;
 }
 
+.view-container {
+    flex-grow: 1;
+}
 
-.games-list {
-    width: 500px;
+.index-view {
+    /* width: 500px; */
 }
