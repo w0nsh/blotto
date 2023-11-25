@@ -2,28 +2,28 @@ open! Core
 open Import
 open Bonsai.Let_syntax
 
+let print_time = Time_ns.to_sec_string ~zone:(Time_float.Zone.of_utc_offset ~hours:1)
+
 let view_game_info ~game_id ~game_info =
   let%sub submit_strategy = Submit_strategy.component ~game_id in
   let%arr { Game_info.name; description; start_date; end_date; rule } = game_info
   and submit_strategy = submit_strategy in
   Pane.component
-    [ N.h1 [ N.text name ]
-    ; N.p [ N.text description ]
-    ; N.p [ N.text (Time_ns.to_string_utc start_date) ]
-    ; N.p [ N.text (Time_ns.to_string_utc end_date) ]
+    ~attrs:[ A.class_ "game-view" ]
+    [ N.h2 [ N.text name ]
+    ; N.p ~attrs:[ A.class_ "description" ] [ N.text description ]
+    ; N.h4 [ N.text "Czas rozpoczęcia i końca" ]
+    ; N.p [ N.text (print_time start_date ^ " - " ^ print_time end_date) ]
+    ; N.h4 [ N.text "Zasady" ]
     ; N.p [ N.text (Rule.description rule) ]
-    ; submit_strategy
+    ; N.h2 ~attrs:[ A.class_ "submit-header" ] [ N.text "Zgłoszenie" ]
+    ; Pane.component ~attrs:[ A.class_ "flex-center-container" ] [ submit_strategy ]
     ]
 ;;
 
 let view ~game_id =
   let%sub game_info, refresh = Api.Get_game.dispatcher in
-  let%sub refresh =
-    let%arr game_id = game_id
-    and refresh = refresh in
-    refresh game_id
-  in
-  let%sub () = Bonsai.Edge.lifecycle ~on_activate:refresh () in
+  let%sub () = Bonsai.Edge.on_change ~equal:Game_id.equal game_id ~callback:refresh in
   match%sub game_info with
   | None -> Bonsai.const (N.text "downloading...")
   | Some game_info ->

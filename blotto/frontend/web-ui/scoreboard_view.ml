@@ -9,16 +9,21 @@ let view_scoreboard scoreboard =
   let columns =
     let render_army _ army =
       View.text
+        ~attrs:
+          [ A.style (Css_gen.font_family [ "monospace" ])
+          ; A.style (Css_gen.font_size (`Px 16))
+          ]
         (Army.to_array army
          |> Array.to_list
          |> List.map ~f:Int.to_string
-         |> String.concat ~sep:", ")
+         |> List.map ~f:(String.pad_left ~len:3)
+         |> String.concat ~sep:" ")
     in
     let render_user_data _ user_data = View.text (User_data.name user_data) in
     let render_score _ = N.textf "%.3f" in
-    [ View.Table.Col.make "User" ~get:Ui_entry.user_data ~render:render_user_data
-    ; View.Table.Col.make "Army" ~get:Ui_entry.army ~render:render_army
-    ; View.Table.Col.make "Score" ~get:Ui_entry.score ~render:render_score
+    [ View.Table.Col.make "Użytkownik" ~get:Ui_entry.user_data ~render:render_user_data
+    ; View.Table.Col.make "Strategia" ~get:Ui_entry.army ~render:render_army
+    ; View.Table.Col.make "Wynik" ~get:Ui_entry.score ~render:render_score
     ]
   in
   View.Table.render theme columns scoreboard
@@ -26,12 +31,7 @@ let view_scoreboard scoreboard =
 
 let view ~game_id =
   let%sub scoreboard, fetch = Api.Get_ui_scoreboard.dispatcher in
-  let%sub fetch =
-    let%arr game_id = game_id
-    and fetch = fetch in
-    fetch game_id
-  in
-  let%sub () = Bonsai.Edge.lifecycle ~on_activate:fetch () in
+  let%sub () = Bonsai.Edge.on_change ~equal:Game_id.equal game_id ~callback:fetch in
   match%sub scoreboard with
   | None -> Bonsai.const (N.text "downloading...")
   | Some scoreboard ->
@@ -41,9 +41,8 @@ let view ~game_id =
        N.text (Error.to_string_hum err)
      | Ok scoreboard ->
        let%sub scoreboard = view_scoreboard scoreboard in
-       let%arr game_id = game_id
-       and scoreboard = scoreboard in
-       Pane.component [ N.h1 [ N.text (Game_id.to_string game_id); scoreboard ] ])
+       let%arr scoreboard = scoreboard in
+       Pane.component ~attrs:[ A.class_ "scoreboard-view" ] [ scoreboard ])
 ;;
 
 let component ~game_id =

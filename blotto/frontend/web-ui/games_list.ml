@@ -2,20 +2,21 @@ open! Core
 open! Import
 open Bonsai.Let_syntax
 
+let game_component ~active ~game_id ~(game : Game_info.t) =
+  let attrs =
+    [ Path.link_attr
+        (if active
+         then Web_ui_route.Game (Some game_id)
+         else Web_ui_route.Scoreboard (Some game_id))
+    ; A.class_ "game-list-entry"
+    ]
+  in
+  Pane.component ~attrs [ N.h4 [ N.text game.name ]; N.p [ N.text game.description ] ]
+;;
+
 let games_component ~active games =
   let games =
-    List.map games ~f:(fun (game_id, game) ->
-      Pane.component
-        ~attrs:
-          [ Path.link_attr
-              (if active
-               then Web_ui_route.Game (Some game_id)
-               else Web_ui_route.Scoreboard (Some game_id))
-          ; A.class_ "game-list-entry"
-          ]
-        [ N.h3 [ N.text (Game_id.to_string game_id) ]
-        ; N.p [ N.text (Game_info.sexp_of_t game |> Sexp.to_string_hum) ]
-        ])
+    List.map games ~f:(fun (game_id, game) -> game_component ~active ~game_id ~game)
   in
   Pane.component games
 ;;
@@ -27,6 +28,7 @@ let sort_partition_games game_infos =
         (fun
           (_, { Game_info.start_date = a; _ }) (_, { Game_info.start_date = b; _ }) ->
         Time_ns.compare a b)
+    >> List.rev
   in
   let partition =
     let now = Time_ns.now () in
@@ -43,7 +45,9 @@ let games_response_component ~theme games_response =
     let games = Hashtbl.to_alist games in
     let ongoing_games, old_games = sort_partition_games games in
     N.div
-      [ games_component ~active:true ongoing_games
+      [ N.h3 [ N.text "Bieżące gry" ]
+      ; games_component ~active:true ongoing_games
+      ; N.h3 [ N.text "Zakończone gry" ]
       ; games_component ~active:false old_games
       ]
   | Error err ->
@@ -64,7 +68,14 @@ let component =
   in
   let%arr games_list = games_list
   and refresh = refresh in
+  let refresh_button =
+    Feather_icon.svg
+      ~extra_attrs:[ A.on_click (fun _ -> refresh); A.class_ "refresh-button" ]
+      Feather_icon.Refresh_ccw
+  in
   Pane.component
     ~attrs:[ A.class_ "games-list" ]
-    [ N.button ~attrs:[ A.on_click (fun _ -> refresh) ] [ N.text "refresh" ]; games_list ]
+    [ N.h2 ~attrs:[ A.class_ "games-header" ] [ N.text "Gry"; refresh_button ]
+    ; games_list
+    ]
 ;;

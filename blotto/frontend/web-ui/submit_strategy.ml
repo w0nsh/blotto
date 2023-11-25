@@ -12,8 +12,8 @@ module T = struct
   let label_for_field =
     `Computed
       (let label : type a. a Typed_field.t -> string = function
-         | Token -> "User token"
-         | Army -> "Strategy"
+         | Token -> "Token użytkownika"
+         | Army -> "Strategia"
        in
        label)
   ;;
@@ -51,11 +51,11 @@ type t = T.t =
   ; army : Army.t
   }
 
-let form = Form.Typed.Record.make (module T)
+let submit_strategy_form = Form.Typed.Record.make (module T)
 
 let component ~game_id =
   let%sub theme = View.Theme.current in
-  let%sub form = form in
+  let%sub form = submit_strategy_form in
   let%arr form = form
   and theme = theme
   and game_id = game_id in
@@ -64,10 +64,10 @@ let component ~game_id =
     let%map.Effect () =
       match result with
       | Error err -> Alert.effect (Error.to_string_hum err)
-      | Ok _ -> Effect.return ()
+      | Ok () -> Alert.effect "Zgłoszenie zostało pomyślnie wysłane"
     in
     ()
   in
-  let on_submit = Form.Submit.create ~f:on_submit () in
+  let on_submit = Form.Submit.create ~button:(Some "wyślij") ~f:on_submit () in
   Form.view_as_vdom ~theme form ~on_submit
 ;;
