@@ -167,6 +167,7 @@ form button {
     border-right: 5px solid black;
     overflow: auto;
     padding-top: 10px;
+    flex-shrink: 0;
 }
 
 .view-container {
