@@ -10,14 +10,17 @@ let view_game_info ~game_id ~game_info =
   and submit_strategy = submit_strategy in
   Pane.component
     ~attrs:[ A.class_ "game-view" ]
-    [ N.h2 [ N.text name ]
-    ; N.p ~attrs:[ A.class_ "description" ] [ N.text description ]
-    ; N.h4 [ N.text "Czas rozpoczęcia i końca" ]
-    ; N.p [ N.text (print_time start_date ^ " - " ^ print_time end_date) ]
-    ; N.h4 [ N.text "Zasady" ]
-    ; N.p [ N.text (Rule.description rule) ]
-    ; N.h2 ~attrs:[ A.class_ "submit-header" ] [ N.text "Zgłoszenie" ]
-    ; Pane.component ~attrs:[ A.class_ "flex-center-container" ] [ submit_strategy ]
+    [ Pane.component
+        ~attrs:[ A.class_ "content" ]
+        [ N.h2 [ N.text name ]
+        ; N.p ~attrs:[ A.class_ "description" ] [ N.text description ]
+        ; N.h4 [ N.text "Czas rozpoczęcia i końca" ]
+        ; N.p [ N.text (print_time start_date ^ " - " ^ print_time end_date) ]
+        ; N.h4 [ N.text "Zasady" ]
+        ; N.p [ N.text (Rule.description rule) ]
+        ; N.h2 ~attrs:[ A.class_ "submit-header" ] [ N.text "Zgłoszenie" ]
+        ; Pane.component ~add_padding:false [ submit_strategy ]
+        ]
     ]
 ;;
 
