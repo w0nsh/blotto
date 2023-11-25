@@ -13,6 +13,10 @@ body {
     margin: 0;
 }
 
+a {
+    color: inherit;
+}
+
 button {
     letter-spacing: 2px;
     text-decoration: none;
@@ -97,6 +101,13 @@ form button {
     top: 50%;
     right: 3%;
     transform: translate(0%, -50%);
+    height: 30px;
+    width: 30px;
+}
+
+.top-bar .top-bar-wiki svg {
+    height: inherit;
+    width: inherit;
 }
 
 .content-container {
