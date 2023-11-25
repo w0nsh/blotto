@@ -45,9 +45,9 @@ let games_response_component ~theme games_response =
     let games = Hashtbl.to_alist games in
     let ongoing_games, old_games = sort_partition_games games in
     N.div
-      [ N.h3 [ N.text "Bieżące gry" ]
+      [ N.h3 [ N.text "Bieżące" ]
       ; games_component ~active:true ongoing_games
-      ; N.h3 [ N.text "Zakończone gry" ]
+      ; N.h3 [ N.text "Zakończone" ]
       ; games_component ~active:false old_games
       ]
   | Error err ->

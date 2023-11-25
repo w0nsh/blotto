@@ -17,6 +17,10 @@ a {
     color: inherit;
 }
 
+p {
+    line-height: 1.4em;
+}
+
 button {
     letter-spacing: 2px;
     text-decoration: none;
@@ -162,7 +166,7 @@ form button {
 }
 
 .navigation-column {
-    width: 500px;
+    width: 400px;
     height: 100%;
     border-right: 5px solid black;
     overflow: auto;
@@ -175,12 +179,22 @@ form button {
     overflow: auto;
 }
 
-.index-view {}
+.index-view {
+    text-align: left;
+}
 
-.game-view {}
+.index-view h3 {
+    text-align: center;
+}
 
-.game-view h2 {
-    margin-bottom: 0;
+.game-view {
+    display: flex;
+    justify-content: center;
+}
+
+.game-view .content {
+    text-align: left;
+    max-width: 700px;
 }
 
 .game-view h4 {
@@ -197,6 +211,10 @@ form button {
 
 .game-view .submit-header {
     margin-top: 50px;
+}
+
+.game-view td {
+    padding-left: 0 !important;
 }
 
 .scoreboard-view {

@@ -4,7 +4,7 @@ open! Import
 
 let rules =
   [ N.p
-      [ N.text
+      [ View.text
           "Colonel Blotto (czyli Pułkownik Blotto) to wieloosobowa gra strategiczna. \
            Każdy z\n\
            zawodników ma do dyspozycji 100 żołnierzy, których rozstawia do walki o 10 \
@@ -14,18 +14,23 @@ let rules =
            Alicja oraz Robert), przebiega w następujący sposób"
       ; N.ol
           [ N.li
-              [ N.text
+              [ View.text
                   "Alicja oraz Robert ustalają swoje rozstawienia wojsk. Przykładowo, \
                    Alicja może powiedzieć, że jej \n\
-                  \  rozstawienie wygląda następująco: 10, 10, 10, 10, 10, 10, 10, 10, \
-                   10, 10. Oznacza to, że do każdego\n\
+                  \  rozstawienie wygląda następująco: "
+              ; N.b [ N.text "10, 10, 10, 10, 10, 10, 10, 10, 10, 10" ]
+              ; View.text
+                  ". Oznacza to, że do każdego\n\
                   \  z zamku wysyła po 10 żołnierzy. Robert natomiast może wybrać takie \
-                   rozstawienie: 0, 1, 2, 10, 5, 15, 7, 15, 15, 30.\n\
-                  \  Oboje gracze wybierają wojska niezależnie i nie mają wiedzy o \
+                   rozstawienie: "
+              ; N.b [ N.text "0, 1, 2, 10, 5, 15, 7, 15, 15, 30" ]
+              ; View.text
+                  ".\n\
+                   Oboje gracze wybierają wojska niezależnie i nie mają wiedzy o \
                    wyborach przeciwnika."
               ]
           ; N.li
-              [ N.text
+              [ View.text
                   "Po fazie rozstawiania następuje walka. Oba wojska szturmują \
                    odpowiednie twierdze. Daną twierdzę zdobywa gracz,\n\
                   \  który zaatakował ją większym zastępem żołnierzy. Twierdzę drugą \
@@ -35,7 +40,7 @@ let rules =
                   \  ponieważ oboje wystawili tę samą liczbę żołnierzy."
               ]
           ; N.li
-              [ N.text
+              [ View.text
                   "Punkty danego gracza oblicza się sumując numery zdobytych przez niego \
                    twierdz. W naszym przykładzie \n\
                   \  Alicja zdobyła twierdze o numerach 1, 2, 3, 5 oraz 7, zatem jej \
@@ -43,18 +48,18 @@ let rules =
                   \  twierdze 6, 8, 9, oraz 10, zatem zdobywa 35 punktów."
               ]
           ]
-      ; N.text
+      ; View.text
           "W naszej grze bierze udział N graczy! N-osobowa wersja gry odbywa się w \
            następujący sposób:"
       ; N.ol
           [ N.li
-              [ N.text
+              [ View.text
                   "W fazie rozstawiania, każdy z graczy rozstawia 100 żołnierzy pomiędzy \
                    10 twierdz, niezależnie\n\
                   \  od siebie i bez wiedzy, co robią jego przeciwnicy."
               ]
           ; N.li
-              [ N.text
+              [ View.text
                   "Kiedy faza rozstawiania się zakończy, każdy z graczy walczy z każdym \
                    innym. Konkretniej, dla każdego\n\
                   \  gracza obliczane są jego wyniki, gdyby odbył walki z każdym innym \
@@ -66,12 +71,12 @@ let rules =
                   \  to jego ostateczny wynik w tej wersji gry wyniesie (11+25+24)/3 = \
                    20 punktów."
               ]
-          ; N.li [ N.text "Im wyższy wynik, tym wyższe miejsce w danej grze." ]
+          ; N.li [ View.text "Im wyższy wynik, tym wyższe miejsce w danej grze." ]
           ]
-      ; N.h3 [ N.text "Wskazówki" ]
+      ; N.h3 [ View.text "Wskazówki" ]
       ; N.ul
           [ N.li
-              [ N.text
+              [ View.text
                   "Nie ma czegoś takiego, jak wojsko doskonałe. Ta gra to w pewnym \
                    sensie papier-kamień-nożyce, ale opcji\n\
                   \                  wyboru jest znacznie więcej (spróbuj policzyć ile \
@@ -82,7 +87,7 @@ let rules =
                   \                  inne rozstawienie, które z nim wygrywa."
               ]
           ; N.li
-              [ N.text
+              [ View.text
                   "Przeczytaj dokładnie zasady każdej rundy, ponieważ każda z nich jest \
                    inna i mają dodatkowe twisty w sposobie\n\
                   \                  obliczania wyniku pojedynku."
