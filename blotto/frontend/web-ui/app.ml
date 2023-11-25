@@ -6,10 +6,10 @@ let top_bar =
   N.div
     ~attrs:[ A.class_ "top-bar" ]
     [ N.h1 ~attrs:[ A.class_ "top-bar-title" ] [ N.text "Blotto" ]
-    ; Feather_icon.svg
-        ~size:(`Px 30)
-        ~extra_attrs:[ A.class_ "top-bar-wiki"; Path.link_attr Web_ui_route.Index ]
-        Feather_icon.Book_open
+    ; N.a
+        ~attrs:
+          [ A.href "https://en.wikipedia.org/wiki/Blotto_game"; A.class_ "top-bar-wiki" ]
+        [ Feather_icon.svg Feather_icon.Book_open ]
     ]
 ;;
 
