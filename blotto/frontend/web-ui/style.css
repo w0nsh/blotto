@@ -13,46 +13,185 @@ body {
     margin: 0;
 }
 
+button {
+    letter-spacing: 2px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: black;
+    background-color: whitesmoke;
+    cursor: pointer;
+    border: 3px solid black;
+    padding: 0.25em 0.5em;
+    box-shadow: 1px 1px 0px 0px black, 2px 2px 0px 0px black, 3px 3px 0px 0px black, 4px 4px 0px 0px black, 5px 5px 0px 0px black;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+button:active {
+    box-shadow: 0px 0px 0px 0px;
+    top: 5px;
+    left: 5px;
+}
+
+button:disabled {
+    color: gray;
+}
+
+@media (min-width: 768px) {
+    button {
+        padding: 0.25em 0.75em;
+    }
+}
+
+form button {
+    margin-top: 8px;
+}
+
+.flex-center-container {
+    display: flex;
+    justify-content: center;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
 .site-container {
-    background-color: maroon;
+    background-color: #772b06;
     color: white;
-    font-family: monospace;
+    font-family: "Open Sans", sans-serif;
     text-align: center;
     position: absolute;
-    height: 100%;
-    width: 100%;
+    height: 100vh;
+    width: 100vw;
     top: 0;
     left: 0;
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-bar {
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+    height: 60px;
+    background-color: black;
+    box-shadow: 0px 0px 5px black;
+}
+
+.top-bar .top-bar-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    padding: 0;
+}
+
+.top-bar .top-bar-wiki {
+    position: absolute;
+    top: 50%;
+    right: 3%;
+    transform: translate(0%, -50%);
 }
 
 .content-container {
+    flex-grow: 1;
     display: flex;
     flex-direction: row;
     justify-content: left;
-    padding: 0 10%;
+    overflow: hidden;
 }
 
 .pane {
-    border: 3px solid whitesmoke;
-    box-shadow: 1px 1px whitesmoke;
-    border-radius: 5px;
-    padding: 10px;
+    /* border: 3px solid whitesmoke; */
+}
+
+.pane-margin {
     margin: 20px;
 }
 
+.pane-padding {
+    padding: 10px;
+}
+
+.games-list .games-header {
+    position: relative;
+}
+
+.games-list .refresh-button {
+    cursor: pointer;
+    position: absolute;
+    left: 10px;
+    height: 100%;
+}
+
+.game-list-entry {
+    text-align: left;
+    border-left: 3px solid whitesmoke;
+    margin-bottom: 10px;
+}
+
+.game-list-entry h4 {
+    margin: 0;
+    padding: 0;
+}
+
+.game-list-entry p {
+    margin: 0;
+    padding: 3px 0 0 0;
+}
+
 .game-list-entry:hover {
-    box-shadow: 3px 3px whitesmoke;
+    border-left: 9px solid whitesmoke;
 }
 
 .navigation-column {
-    width: 400px;
+    width: 500px;
+    height: 100%;
+    border-right: 5px solid black;
+    overflow: auto;
+    padding-top: 10px;
 }
 
 .view-container {
     flex-grow: 1;
+    overflow: auto;
 }
 
-.index-view {
-    /* width: 500px; */
+.index-view {}
+
+.game-view {}
+
+.game-view h2 {
+    margin-bottom: 0;
+}
+
+.game-view h4 {
+    margin: 0;
+}
+
+.game-view p {
+    margin-top: 6px;
+}
+
+.game-view .description {
+    margin-bottom: 30px;
+}
+
+.game-view .submit-header {
+    margin-top: 50px;
+}
+
+.scoreboard-view {
+    display: flex;
+    justify-content: center;
+}
+
+.scoreboard-view table {
+    flex-grow: 1;
 }

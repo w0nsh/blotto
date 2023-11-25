@@ -4,7 +4,11 @@ open Bonsai.Let_syntax
 
 let register_button =
   Pane.component
-    [ N.button ~attrs:[ Path.link_attr Web_ui_route.Register_user ] [ N.text "Register" ]
+    ~attrs:[ A.class_ "button-container" ]
+    [ N.button ~attrs:[ Path.link_attr Web_ui_route.Index ] [ N.text "zasady" ]
+    ; N.button
+        ~attrs:[ Path.link_attr Web_ui_route.Register_user ]
+        [ N.text "rejestracja" ]
     ]
 ;;
 

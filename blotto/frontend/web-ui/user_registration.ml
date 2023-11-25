@@ -12,8 +12,8 @@ module T = struct
   let label_for_field =
     `Computed
       (let label : type a. a Typed_field.t -> string = function
-         | Name -> "Name"
-         | Email -> "Email address"
+         | Name -> "Imię"
+         | Email -> "Adres e-mail"
        in
        label)
   ;;
@@ -46,9 +46,17 @@ let user_token_view token =
   | None -> Bonsai.const N.none
   | Some token ->
     let%arr token = token in
-    N.div
-      [ N.label [ N.text "Token" ]
-      ; N.input ~attrs:[ A.readonly; A.type_ "text"; A.value token ] ()
+    Pane.component
+      ~add_padding:false
+      [ N.h4 [ N.text "Token" ]
+      ; N.input
+          ~attrs:
+            [ A.readonly
+            ; A.type_ "text"
+            ; A.value token
+            ; A.style (Css_gen.text_align `Center)
+            ]
+          ()
       ]
 ;;
 
@@ -70,6 +78,8 @@ let component =
     in
     ()
   in
-  let on_submit = Form.Submit.create ~f:on_submit () in
-  N.div [ Form.view_as_vdom ~theme form ~on_submit; token_view ]
+  let on_submit = Form.Submit.create ~button:(Some "wygeneruj token") ~f:on_submit () in
+  Pane.component
+    ~attrs:[ A.class_ "flex-center-container" ]
+    [ Pane.component [ Form.view_as_vdom ~theme form ~on_submit; token_view ] ]
 ;;
