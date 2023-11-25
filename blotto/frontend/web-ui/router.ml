@@ -1,14 +1,12 @@
 open! Core
 open Import
 
-let route = Value.map Path.path ~f:Web_ui_route.of_string
-
 let component =
   let open Bonsai.Let_syntax in
-  match%sub route with
-  | Game -> Game_view.component
+  match%sub Path.route with
+  | Game game_id -> Game_view.component ~game_id
   | Index -> Index_view.component
-  | User -> Bonsai.const (N.text "not implemented")
-  | Scoreboard -> Scoreboard_view.component
-  | _ -> Not_found.component
+  | Register_user -> User_registration.component
+  | Scoreboard game_id -> Scoreboard_view.component ~game_id
+  | Not_found -> Not_found.component
 ;;

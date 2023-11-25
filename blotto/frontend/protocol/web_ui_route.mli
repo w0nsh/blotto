@@ -1,8 +1,12 @@
+open! Core
+open Import
+
 type t =
-  | Game
+  | Game of Game_id.t option
   | Index
-  | Scoreboard
-  | User
+  | Register_user
+  | Scoreboard of Game_id.t option
   | Not_found
 
-val of_string : string -> t
+val of_uri : Uri.t -> t
+val set_path_and_query : uri:Uri.t -> t -> Uri.t

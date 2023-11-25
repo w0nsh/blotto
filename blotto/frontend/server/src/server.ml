@@ -12,8 +12,8 @@ let respond_string ?flush ?headers ?status ~content_type s =
 ;;
 
 let handler ~body:_ _inet req =
-  let path = Uri.path (Cohttp.Request.uri req) in
-  match Route.of_string path with
+  let uri = Cohttp.Request.uri req in
+  match Route.of_uri uri with
   | Script ->
     respond_string
       ~content_type:"application/javascript"
