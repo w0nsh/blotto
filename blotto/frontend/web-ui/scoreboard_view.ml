@@ -14,6 +14,7 @@ let sort_scoreboard scoreboard =
   List.sort
     ~compare:(fun (a : Ui_entry.t) (b : Ui_entry.t) -> Float.compare a.score b.score)
     scoreboard
+  |> List.rev
   |> List.foldi
        ~init:([], -1.0, -1)
        ~f:(fun index (ret, previous_score, previous_place) (entry : Ui_entry.t) ->
@@ -22,6 +23,7 @@ let sort_scoreboard scoreboard =
          in
          { Ui_entry_and_place.entry; place } :: ret, entry.score, place)
   |> fst3
+  |> List.rev
 ;;
 
 let view_scoreboard scoreboard =
