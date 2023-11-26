@@ -59,7 +59,10 @@ form button {
 
 .flex-center-container {
     display: flex;
-    justify-content: center;
+}
+
+.flex-center-child {
+    margin: auto;
 }
 
 .button-container {
@@ -190,37 +193,36 @@ form button {
 
 .game-view {
     display: flex;
-    justify-content: center;
 }
 
 .game-view .content {
     text-align: left;
     max-width: 700px;
+    margin: auto;
 }
 
-.game-view h4 {
+.game-view .content h4 {
     margin: 0;
 }
 
-.game-view p {
+.game-view .content p {
     margin-top: 6px;
 }
 
-.game-view .description {
+.game-view .content .description {
     margin-bottom: 30px;
 }
 
-.game-view .submit-header {
+.game-view .content .submit-header {
     margin-top: 50px;
 }
 
-.game-view td {
+.game-view .content td {
     padding-left: 0 !important;
 }
 
 .scoreboard-view {
     display: flex;
-    justify-content: center;
 }
 
 .scoreboard-view table {

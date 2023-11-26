@@ -81,5 +81,8 @@ let component =
   let on_submit = Form.Submit.create ~button:(Some "wygeneruj token") ~f:on_submit () in
   Pane.component
     ~attrs:[ A.class_ "flex-center-container" ]
-    [ Pane.component [ Form.view_as_vdom ~theme form ~on_submit; token_view ] ]
+    [ Pane.component
+        ~attrs:[ A.class_ "flex-center-child" ]
+        [ Form.view_as_vdom ~theme form ~on_submit; token_view ]
+    ]
 ;;
