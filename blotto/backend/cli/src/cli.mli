@@ -36,3 +36,8 @@ val get_scoreboard_rpc
   :  where_to_connect:[< Socket.Address.t ] Tcp.Where_to_connect.t
   -> query:Get_scoreboard.Query.t
   -> Get_scoreboard.Response.t Deferred.Or_error.t
+
+val recalculate_scoreboard_rpc
+  :  where_to_connect:[< Socket.Address.t ] Tcp.Where_to_connect.t
+  -> query:Recalculate_scoreboard.Query.t
+  -> Recalculate_scoreboard.Response.t Deferred.Or_error.t

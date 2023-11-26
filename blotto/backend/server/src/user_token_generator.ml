@@ -28,8 +28,8 @@ let%expect_test "generate-token-test" =
   print_s [%sexp (tokens : User_token.t list)];
   [%expect
     {|
-    (senate-yes-jewish goal-flame-language medium-every-marketing
-     involved-photograph-repeatedly description-characteristic-remarkable
-     still-handle-grandfather modern-achieve-of think-store-complicated
-     legal-advertising-business responsibility-reflection-marketing) |}]
+    (stop-grandfather-intend clearly-path-orientation
+     survive-problem-comprehensive dream-vehicle-frequency
+     minority-senior-nothing recommendation-version-given pain-apple-today
+     action-father-impress immigrant-fiber-breakfast protection-era-strange) |}]
 ;;

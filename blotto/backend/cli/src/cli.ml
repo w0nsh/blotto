@@ -48,3 +48,10 @@ let get_scoreboard_rpc ~where_to_connect ~query =
   >>| Result.map_error ~f:Error.of_exn
   >>| Or_error.join
 ;;
+
+let recalculate_scoreboard_rpc ~where_to_connect ~query =
+  Rpc.Connection.with_client where_to_connect (fun conn ->
+    Recalculate_scoreboard.dispatch conn query)
+  >>| Result.map_error ~f:Error.of_exn
+  >>| Or_error.join
+;;

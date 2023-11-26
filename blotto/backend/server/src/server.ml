@@ -115,7 +115,11 @@ let submit_entry_implementation
   State.add_entry state ~token ~army ~game_id |> return
 ;;
 
-(* TODO: Get scoreboard. *)
+let recalculate_scoreboard_implementation ~state ~rpc_tag rpc_state game_id =
+  log_rpc rpc_state rpc_tag;
+  State.recalculate_scoreboard state game_id |> return
+;;
+
 let implementations state =
   let implementations =
     [ Get_game.implement (get_game_implementation ~state)
@@ -128,6 +132,7 @@ let implementations state =
     ; Submit_entry.implement (submit_entry_implementation ~state)
     ; Get_scoreboard.implement (get_scoreboard_implementation ~state)
     ; Get_ui_scoreboard.implement (get_ui_scoreboard_implementation ~state)
+    ; Recalculate_scoreboard.implement (recalculate_scoreboard_implementation ~state)
     ]
   in
   Rpc.Implementations.create_exn ~implementations ~on_unknown_rpc:(`Call unkown_rpc)

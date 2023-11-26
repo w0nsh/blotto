@@ -169,6 +169,26 @@ let get_scoreboard_rpc_command =
        print_s [%sexp (scoreboard : Scoreboard.t)])
 ;;
 
+let recalculate_scoreboard_rpc_command =
+  Command.async_or_error
+    ~summary:"Recalculate scoreboard"
+    (let%map_open.Command host =
+       flag
+         "host"
+         (optional_with_default "127.0.0.1" string)
+         ~doc:"STRING Host to connect to"
+     and port = flag "port" (optional_with_default 8080 int) ~doc:"INT Port to connect to"
+     and game_id = anon ("game_id" %: Game_id.arg_type) in
+     fun () ->
+       let where_to_connect =
+         Tcp.Where_to_connect.of_host_and_port (Host_and_port.create ~host ~port)
+       in
+       let%map.Deferred.Or_error () =
+         Cli.recalculate_scoreboard_rpc ~where_to_connect ~query:game_id
+       in
+       print_s [%sexp (() : unit)])
+;;
+
 let list_users_rpc_command =
   Command.async_or_error
     ~summary:"List users"
@@ -222,5 +242,6 @@ let command =
     ; "remove-game", remove_game_rpc_command
     ; "register-user", register_user_rpc_command
     ; "get-scoreboard", get_scoreboard_rpc_command
+    ; "recalculate-scoreboard", recalculate_scoreboard_rpc_command
     ]
 ;;

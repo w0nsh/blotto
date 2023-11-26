@@ -60,7 +60,12 @@ let%expect_test "create" =
        ((name "Game 1") (description "Some description of the rules.")
         (start_date "1823-11-12 00:06:21.572612096Z")
         (end_date "2116-02-20 23:53:38.427387903Z")
-        (rule ((kind Basic) (description "Description of the basic rule.")))))
+        (rule
+         ((kind Basic)
+          (description
+            "Klasyczna wersja gry. Dwa wojska walcz\196\133 o ka\197\188d\196\133 twierdz\196\153. Gracz zdobywa\
+           \ndan\196\133 twierdz\196\153 tylko wtedy, kiedy atakuje j\196\133 \197\155ci\197\155le wi\196\153kszym zast\196\153pem \197\188o\197\130nierzy.\
+           \nWynik pojedynczego pojedynku to suma numer\195\179w zdobytych twierdz.")))))
       (allowed_users Any) (entries ())))
     (Error
      ("Start date must be before end date."
@@ -81,7 +86,12 @@ let%expect_test "create" =
        ((name "Game 1") (description "Some description of the rules.")
         (start_date "1823-11-12 00:06:21.572612096Z")
         (end_date "2116-02-20 23:53:38.427387903Z")
-        (rule ((kind Basic) (description "Description of the basic rule.")))))
+        (rule
+         ((kind Basic)
+          (description
+            "Klasyczna wersja gry. Dwa wojska walcz\196\133 o ka\197\188d\196\133 twierdz\196\153. Gracz zdobywa\
+           \ndan\196\133 twierdz\196\153 tylko wtedy, kiedy atakuje j\196\133 \197\155ci\197\155le wi\196\153kszym zast\196\153pem \197\188o\197\130nierzy.\
+           \nWynik pojedynczego pojedynku to suma numer\195\179w zdobytych twierdz.")))))
       (allowed_users Any)
       (entries
        ((first-token (1 2 3 4 5 6 7 8 9 55))
