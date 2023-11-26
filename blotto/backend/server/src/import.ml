@@ -11,6 +11,7 @@ include struct
   module Remove_game = Remove_game
   module List_users = List_users
   module User_info = User_info
+  module Recalculate_scoreboard = Recalculate_scoreboard
 end
 
 include struct

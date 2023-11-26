@@ -10,3 +10,4 @@ module Remove_game = Remove_game
 module List_users = List_users
 module User_info = User_info
 module Rpc_intf = Rpc_intf
+module Recalculate_scoreboard = Recalculate_scoreboard

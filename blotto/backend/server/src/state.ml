@@ -6,8 +6,10 @@ module Data = struct
   type t =
     { games : Game.t Game_id.Table.t
     ; users : User_info.t User_token.Table.t
-    ; mutable emails : Email.Set.t
     ; scoreboards : Scoreboard.t Game_id.Table.t
+    ; mutable emails : Email.Set.t
+        (* If a game is in this set, then scoreboard needs to be recalculated. *)
+    ; mutable need_recalculation : Game_id.Set.t
     }
   [@@deriving sexp, equal]
 end
@@ -23,6 +25,7 @@ let init ?seed () =
       ; users = User_token.Table.create ()
       ; scoreboards = Game_id.Table.create ()
       ; emails = Email.Set.empty
+      ; need_recalculation = Game_id.Set.empty
       }
   ; token_generator = User_token_generator.init ?seed ()
   }
@@ -55,7 +58,8 @@ let get_game_infos { data = { games; _ }; _ } = Hashtbl.map games ~f:Game.info
 
 let remove_game t game_id =
   let%map.Or_error _ = get_game t game_id in
-  Hashtbl.remove t.data.games game_id
+  Hashtbl.remove t.data.games game_id;
+  t.data.need_recalculation <- Set.remove t.data.need_recalculation game_id
 ;;
 
 let list_users { data; _ } = data.users
@@ -120,13 +124,15 @@ let can_participate allowed_users token =
   | Users allowed_tokens -> Set.mem allowed_tokens token
 ;;
 
-let recalculate_scoreboard { data; _ } ~game_id ~(game : Game.t) =
+let recalculate_scoreboard t game_id =
+  let%map.Or_error game = get_game t game_id in
   let scoreboard =
     Scoreboard.create
       ~entries:(Hashtbl.to_alist game.entries)
       ~eval:(Rule.eval game.info.rule)
   in
-  Hashtbl.set data.scoreboards ~key:game_id ~data:scoreboard
+  Hashtbl.set t.data.scoreboards ~key:game_id ~data:scoreboard;
+  t.data.need_recalculation <- Set.remove t.data.need_recalculation game_id
 ;;
 
 let add_entry t ~token ~army ~game_id =
@@ -147,15 +153,19 @@ let add_entry t ~token ~army ~game_id =
           (game.info.end_date : Time_ns_fix.t)]
   else (
     Game.update_entry game ~token ~army;
-    recalculate_scoreboard t ~game_id ~game;
+    t.data.need_recalculation <- Set.add t.data.need_recalculation game_id;
     Ok ())
 ;;
 
 let get_scoreboard t game_id =
-  let%bind.Or_error _ = get_game t game_id in
+  let%bind.Or_error () =
+    match Set.mem t.data.need_recalculation game_id with
+    | false -> Ok ()
+    | true -> recalculate_scoreboard t game_id
+  in
   match Hashtbl.find t.data.scoreboards game_id with
   | None ->
-    Or_error.error_s [%message "No entries yet for the game" (game_id : Game_id.t)]
+    Or_error.error_s [%message "Scoreboard not calculated yet." (game_id : Game_id.t)]
   | Some scoreboard -> Ok scoreboard
 ;;
 

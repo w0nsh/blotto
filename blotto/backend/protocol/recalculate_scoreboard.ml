@@ -3,6 +3,16 @@ open Blotto_kernel_lib
 
 module T = struct
   module Query = struct
+    type t = Game_id.t
+    [@@deriving sexp, bin_io, equal]
+
+    let%expect_test _ =
+      print_endline [%bin_digest: t];
+      [%expect {| d9a8da25d5656b016fb4dbdc2e4197fb |}]
+    ;;
+  end
+
+  module Response = struct
     type t = unit [@@deriving sexp, bin_io, equal]
 
     let%expect_test _ =
@@ -11,16 +21,7 @@ module T = struct
     ;;
   end
 
-  module Response = struct
-    type t = Game_info.t Game_id.Table.t [@@deriving sexp, bin_io, equal]
-
-    let%expect_test _ =
-      print_endline [%bin_digest: t];
-      [%expect {| c7d044e789ab4d989fe04b624123502e |}]
-    ;;
-  end
-
-  let rpc_name = "get_games"
+  let rpc_name = "recalculate_scoreboard"
 end
 
 include T

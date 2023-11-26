@@ -17,6 +17,7 @@ val get_scoreboard : t -> Game_id.t -> Scoreboard.t Or_error.t
 val get_user_info : t -> User_token.t -> User_info.t Or_error.t
 val remove_game : t -> Game_id.t -> unit Or_error.t
 val list_users : t -> User_info.t User_token.Table.t
+val recalculate_scoreboard : t -> Game_id.t -> unit Or_error.t
 
 val update_game
   :  ?name:string
