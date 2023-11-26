@@ -15,13 +15,13 @@ type t =
 [@@deriving sexp, bin_io, equal, fields ~getters]
 
 let create ~name ~description ~start_date ~end_date ~allowed_users ~rule =
-  if Time_ns.( > ) start_date end_date
+  if Time_ns_fix.( > ) start_date end_date
   then
     Or_error.error_s
       [%message
         "Start date must be before end date."
-          (start_date : Time_ns.Alternate_sexp.t)
-          (end_date : Time_ns.Alternate_sexp.t)]
+          (start_date : Time_ns_fix.t)
+          (end_date : Time_ns_fix.t)]
   else
     Ok
       { info = { name; description; start_date; end_date; rule }
@@ -37,8 +37,8 @@ let%expect_test "create" =
     create
       ~name:"Game 1"
       ~description:"Some description of the rules."
-      ~start_date:Time_ns.min_value_representable
-      ~end_date:Time_ns.max_value_representable
+      ~start_date:Time_ns_fix.min_value_representable
+      ~end_date:Time_ns_fix.max_value_representable
       ~allowed_users:Any
       ~rule:Rule.basic
   in
@@ -46,8 +46,8 @@ let%expect_test "create" =
     create
       ~name:"Game 2"
       ~description:"Some description of the rules."
-      ~start_date:Time_ns.max_value_representable
-      ~end_date:Time_ns.min_value_representable
+      ~start_date:Time_ns_fix.max_value_representable
+      ~end_date:Time_ns_fix.min_value_representable
       ~allowed_users:Any
       ~rule:Rule.basic
   in

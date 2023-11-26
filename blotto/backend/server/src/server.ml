@@ -55,12 +55,12 @@ let get_ui_scoreboard_implementation
   =
   log_rpc rpc_state rpc_tag;
   let%bind.Deferred.Or_error game = State.get_game state query |> return in
-  if Time_ns.(now () < game.info.end_date)
+  if Time_ns_fix.(now () < game.info.end_date)
   then
     Or_error.error_s
       [%message
         "Cannot show scoreboard before end of a game."
-          (game.info.end_date : Time_ns.Alternate_sexp.t)]
+          (game.info.end_date : Time_ns_fix.t)]
     |> return
   else (
     let%bind.Deferred.Or_error scoreboard = State.get_scoreboard state query |> return in
@@ -92,7 +92,7 @@ let update_game_implementation
     |> return
   in
   let%bind.Deferred.Or_error game = State.get_game state id |> return in
-  Deferred.Or_error.return { Update_game.Response.Result.id; game }
+  Deferred.Or_error.return { Update_game.Response.id; game }
 ;;
 
 let remove_game_implementation ~state ~rpc_tag rpc_state game_id =

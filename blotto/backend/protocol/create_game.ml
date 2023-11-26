@@ -7,7 +7,7 @@ module T = struct
       { game_id : Game_id.t
       ; game : Game.t
       }
-    [@@deriving sexp, bin_io]
+    [@@deriving sexp, bin_io, equal]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
@@ -16,7 +16,7 @@ module T = struct
   end
 
   module Response = struct
-    type t = unit [@@deriving sexp, bin_io]
+    type t = unit [@@deriving sexp, bin_io, equal]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];

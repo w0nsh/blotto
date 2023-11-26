@@ -87,7 +87,7 @@ let create_user t (user_data : User_data.t) =
     Hashtbl.set
       t.data.users
       ~key:token
-      ~data:{ User_info.data = user_data; creation_time = Time_ns.now () };
+      ~data:{ User_info.data = user_data; creation_time = Time_ns_fix.now () };
     t.data.emails <- Set.add t.data.emails email;
     Ok token)
 ;;
@@ -138,13 +138,13 @@ let add_entry t ~token ~army ~game_id =
         "This token cannot participate in this game."
           (token : User_token.t)
           (game_id : Game_id.t)]
-  else if Time_ns.(now () > game.info.end_date)
+  else if Time_ns_fix.(now () > game.info.end_date)
   then
     Or_error.error_s
       [%message
         "Game has already finished, cannot submit."
           (game_id : Game_id.t)
-          (game.info.end_date : Time_ns.Alternate_sexp.t)]
+          (game.info.end_date : Time_ns_fix.t)]
   else (
     Game.update_entry game ~token ~army;
     recalculate_scoreboard t ~game_id ~game;
@@ -165,8 +165,8 @@ let%expect_test "state" =
     Game.create
       ~name:"Test game"
       ~description:"This is a game"
-      ~start_date:Time_ns.min_value_representable
-      ~end_date:Time_ns.max_value_representable
+      ~start_date:Time_ns_fix.min_value_representable
+      ~end_date:Time_ns_fix.max_value_representable
       ~allowed_users:Any
       ~rule:Rule.basic
     |> Or_error.ok_exn

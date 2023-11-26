@@ -18,12 +18,12 @@ let rules =
                   "Alicja oraz Robert ustalają swoje rozstawienia wojsk. Przykładowo, \
                    Alicja może powiedzieć, że jej \n\
                   \  rozstawienie wygląda następująco: "
-              ; N.b [ N.text "10, 10, 10, 10, 10, 10, 10, 10, 10, 10" ]
+              ; N.create "b" [ N.text "10, 10, 10, 10, 10, 10, 10, 10, 10, 10" ]
               ; View.text
                   ". Oznacza to, że do każdego\n\
                   \  z zamku wysyła po 10 żołnierzy. Robert natomiast może wybrać takie \
                    rozstawienie: "
-              ; N.b [ N.text "0, 1, 2, 10, 5, 15, 7, 15, 15, 30" ]
+              ; N.create "b" [ N.text "0, 1, 2, 10, 5, 15, 7, 15, 15, 30" ]
               ; View.text
                   ".\n\
                    Oboje gracze wybierają wojska niezależnie i nie mają wiedzy o \

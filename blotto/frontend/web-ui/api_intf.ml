@@ -3,11 +3,11 @@ open Import
 
 module type S = sig
   module Query : sig
-    type t [@@deriving sexp, bin_io]
+    type t [@@deriving sexp, bin_io, equal]
   end
 
   module Response : sig
-    type t [@@deriving sexp, bin_io]
+    type t [@@deriving sexp, bin_io, equal]
   end
 
   val dispatch_effect : Query.t -> Response.t Or_error.t Ui_effect.t

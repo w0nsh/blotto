@@ -27,7 +27,7 @@
   (cohttp-async
    (>= 5.3.0))
   (bonsai
-   (= v0.17~preview.128.46+112))
+   (= v0.16.0))
   dune)
  (tags
   ("blotto" "fun")))

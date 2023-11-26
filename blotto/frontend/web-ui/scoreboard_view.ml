@@ -31,7 +31,7 @@ let view_scoreboard scoreboard =
 
 let view ~game_id =
   let%sub scoreboard, fetch = Api.Get_ui_scoreboard.dispatcher in
-  let%sub () = Bonsai.Edge.on_change ~equal:Game_id.equal game_id ~callback:fetch in
+  let%sub () = Bonsai.Edge.on_change (module Game_id) game_id ~callback:fetch in
   match%sub scoreboard with
   | None -> Bonsai.const (N.text "downloading...")
   | Some scoreboard ->

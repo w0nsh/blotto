@@ -4,11 +4,11 @@ open Async_rpc_kernel
 
 module type Arg = sig
   module Query : sig
-    type t [@@deriving sexp, bin_io]
+    type t [@@deriving sexp, bin_io, equal]
   end
 
   module Response : sig
-    type t [@@deriving sexp, bin_io]
+    type t [@@deriving sexp, bin_io, equal]
   end
 
   val rpc_name : string

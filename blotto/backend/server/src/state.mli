@@ -21,8 +21,8 @@ val list_users : t -> User_info.t User_token.Table.t
 val update_game
   :  ?name:string
   -> ?description:string
-  -> ?start_date:Time_ns.Alternate_sexp.t
-  -> ?end_date:Time_ns.Alternate_sexp.t
+  -> ?start_date:Time_ns_fix.t
+  -> ?end_date:Time_ns_fix.t
   -> ?allowed_users:Game.Allowed_users.t
   -> ?rule:Rule.t
   -> t

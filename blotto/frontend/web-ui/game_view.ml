@@ -2,7 +2,7 @@ open! Core
 open Import
 open Bonsai.Let_syntax
 
-let print_time = Time_ns.to_sec_string ~zone:(Time_float.Zone.of_utc_offset ~hours:1)
+let print_time = Time_ns_fix.to_sec_string ~zone:(Time_float.Zone.of_utc_offset ~hours:1)
 
 let view_game_info ~game_id ~game_info =
   let%sub submit_strategy = Submit_strategy.component ~game_id in
@@ -26,7 +26,7 @@ let view_game_info ~game_id ~game_info =
 
 let view ~game_id =
   let%sub game_info, refresh = Api.Get_game.dispatcher in
-  let%sub () = Bonsai.Edge.on_change ~equal:Game_id.equal game_id ~callback:refresh in
+  let%sub () = Bonsai.Edge.on_change (module Game_id) game_id ~callback:refresh in
   match%sub game_info with
   | None -> Bonsai.const (N.text "downloading...")
   | Some game_info ->

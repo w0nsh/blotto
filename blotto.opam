@@ -13,7 +13,7 @@ depends: [
   "ocamlformat" {>= "0.26.1"}
   "cohttp" {>= "5.3.0"}
   "cohttp-async" {>= "5.3.0"}
-  "bonsai" {= "v0.17~preview.128.46+112"}
+  "bonsai" {>= "v0.16.0"}
   "dune" {>= "3.11"}
   "odoc" {with-doc}
 ]

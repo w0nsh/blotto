@@ -8,7 +8,7 @@ module T = struct
       ; token : User_token.t
       ; army : Army.t
       }
-    [@@deriving sexp, bin_io]
+    [@@deriving sexp, bin_io, equal]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
@@ -17,7 +17,7 @@ module T = struct
   end
 
   module Response = struct
-    type t = unit [@@deriving sexp, bin_io]
+    type t = unit [@@deriving sexp, bin_io, equal]
 
     let%expect_test _ =
       print_endline [%bin_digest: t];

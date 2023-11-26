@@ -5,4 +5,4 @@ type t =
   ; score : float
   ; user_data : User_data.t
   }
-[@@deriving sexp, bin_io, fields ~getters]
+[@@deriving sexp, bin_io, fields ~getters, equal]

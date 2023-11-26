@@ -62,7 +62,7 @@ let user_token_view token =
 
 let component =
   let%sub theme = View.Theme.current in
-  let%sub token, set_token = Bonsai.state_opt ~sexp_of_model:String.sexp_of_t () in
+  let%sub token, set_token = Bonsai.state_opt (module String) in
   let%sub token_view = user_token_view token in
   let%sub form = form in
   let%arr form = form

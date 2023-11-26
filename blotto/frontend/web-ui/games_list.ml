@@ -27,13 +27,13 @@ let sort_partition_games game_infos =
       ~compare:
         (fun
           (_, { Game_info.start_date = a; _ }) (_, { Game_info.start_date = b; _ }) ->
-        Time_ns.compare a b)
+        Time_ns_fix.compare a b)
     >> List.rev
   in
   let partition =
-    let now = Time_ns.now () in
+    let time_now = Time_ns_fix.now () in
     List.partition_tf ~f:(fun (_, { Game_info.end_date; _ }) ->
-      Time_ns.O.(end_date >= now))
+      Time_ns_fix.(end_date >= time_now))
   in
   sort game_infos |> partition
 ;;

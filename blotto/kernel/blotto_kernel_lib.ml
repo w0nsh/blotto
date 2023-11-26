@@ -8,3 +8,4 @@ module Army = Army
 module Rule = Rule
 module Email = Email
 module Ui_entry = Ui_entry
+module Time_ns_fix = Time_ns_fix

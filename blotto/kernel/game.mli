@@ -17,8 +17,8 @@ type t =
 val create
   :  name:string
   -> description:string
-  -> start_date:Time_ns.Alternate_sexp.t
-  -> end_date:Time_ns.Alternate_sexp.t
+  -> start_date:Time_ns_fix.t
+  -> end_date:Time_ns_fix.t
   -> allowed_users:Allowed_users.t
   -> rule:Rule.t
   -> t Or_error.t

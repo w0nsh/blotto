@@ -47,7 +47,13 @@ let create_game_rpc_command =
        in
        let%bind.Deferred.Or_error allowed_users = get_allowed_users allowed_users in
        let%bind.Deferred.Or_error game =
-         Game.create ~name ~description ~start_date ~end_date ~allowed_users ~rule
+         Game.create
+           ~name
+           ~description
+           ~start_date:(Time_ns_fix.of_time_ns start_date)
+           ~end_date:(Time_ns_fix.of_time_ns end_date)
+           ~allowed_users
+           ~rule
          |> return
        in
        let%map.Deferred.Or_error response =
@@ -92,8 +98,8 @@ let update_game_rpc_command =
          { Update_game.Query.id = game_id
          ; name
          ; description
-         ; start_date
-         ; end_date
+         ; start_date = Option.map ~f:Time_ns_fix.of_time_ns start_date
+         ; end_date = Option.map ~f:Time_ns_fix.of_time_ns end_date
          ; rule
          ; allowed_users
          }

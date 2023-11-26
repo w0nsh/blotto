@@ -22,4 +22,5 @@ include struct
   module Army = Army
   module Rule = Rule
   module Email = Email
+  module Time_ns_fix = Time_ns_fix
 end

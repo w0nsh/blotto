@@ -1,6 +1,6 @@
 (executable
  (name blotto_frontend_server)
  (public_name blotto_frontend_server)
- (libraries blotto_frontend_server_lib)
+ (libraries blotto_frontend_server_lib core_unix.command_unix)
  (preprocess
   (pps ppx_jane)))
