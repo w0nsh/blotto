@@ -120,19 +120,35 @@ let recalculate_scoreboard_implementation ~state ~rpc_tag rpc_state game_id =
   State.recalculate_scoreboard state game_id |> return
 ;;
 
+let implement_rpc
+  (type response_type query_type)
+  (module M : Rpc_intf.S
+    with type Response.t = response_type
+     and type Query.t = query_type)
+  ~f
+  =
+  M.implement (fun ~rpc_tag connection_state query ->
+    Log.Global.info_s [%message "New RPC" M.rpc_name (query : M.Query.t)];
+    f ~rpc_tag connection_state query)
+;;
+
 let implementations state =
   let implementations =
-    [ Get_game.implement (get_game_implementation ~state)
-    ; Get_games.implement (get_games_implementation ~state)
-    ; Create_game.implement (create_game_implrementation ~state)
-    ; Register_user.implement (register_user_implementation ~state)
-    ; Update_game.implement (update_game_implementation ~state)
-    ; Remove_game.implement (remove_game_implementation ~state)
-    ; List_users.implement (list_users_implementation ~state)
-    ; Submit_entry.implement (submit_entry_implementation ~state)
-    ; Get_scoreboard.implement (get_scoreboard_implementation ~state)
-    ; Get_ui_scoreboard.implement (get_ui_scoreboard_implementation ~state)
-    ; Recalculate_scoreboard.implement (recalculate_scoreboard_implementation ~state)
+    [ implement_rpc (module Get_game) ~f:(get_game_implementation ~state)
+    ; implement_rpc (module Get_games) ~f:(get_games_implementation ~state)
+    ; implement_rpc (module Create_game) ~f:(create_game_implrementation ~state)
+    ; implement_rpc (module Register_user) ~f:(register_user_implementation ~state)
+    ; implement_rpc (module Update_game) ~f:(update_game_implementation ~state)
+    ; implement_rpc (module Remove_game) ~f:(remove_game_implementation ~state)
+    ; implement_rpc (module List_users) ~f:(list_users_implementation ~state)
+    ; implement_rpc (module Submit_entry) ~f:(submit_entry_implementation ~state)
+    ; implement_rpc (module Get_scoreboard) ~f:(get_scoreboard_implementation ~state)
+    ; implement_rpc
+        (module Get_ui_scoreboard)
+        ~f:(get_ui_scoreboard_implementation ~state)
+    ; implement_rpc
+        (module Recalculate_scoreboard)
+        ~f:(recalculate_scoreboard_implementation ~state)
     ]
   in
   Rpc.Implementations.create_exn ~implementations ~on_unknown_rpc:(`Call unkown_rpc)
