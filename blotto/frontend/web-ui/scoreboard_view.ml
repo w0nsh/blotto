@@ -2,10 +2,33 @@ open! Core
 open Import
 open Bonsai.Let_syntax
 
+module Ui_entry_and_place = struct
+  type t =
+    { entry : Ui_entry.t
+    ; place : int
+    }
+  [@@deriving fields ~getters]
+end
+
+let sort_scoreboard scoreboard =
+  List.sort
+    ~compare:(fun (a : Ui_entry.t) (b : Ui_entry.t) -> Float.compare a.score b.score)
+    scoreboard
+  |> List.foldi
+       ~init:([], -1.0, -1)
+       ~f:(fun index (ret, previous_score, previous_place) (entry : Ui_entry.t) ->
+         let place =
+           if Float.equal previous_score entry.score then previous_place else index + 1
+         in
+         { Ui_entry_and_place.entry; place } :: ret, entry.score, place)
+  |> fst3
+;;
+
 let view_scoreboard scoreboard =
   let%sub theme = View.Theme.current in
   let%arr scoreboard = scoreboard
   and theme = theme in
+  let scoreboard = sort_scoreboard scoreboard in
   let columns =
     let render_army _ army =
       View.text
@@ -21,9 +44,20 @@ let view_scoreboard scoreboard =
     in
     let render_user_data _ user_data = View.text (User_data.name user_data) in
     let render_score _ = N.textf "%.3f" in
-    [ View.Table.Col.make "Użytkownik" ~get:Ui_entry.user_data ~render:render_user_data
-    ; View.Table.Col.make "Strategia" ~get:Ui_entry.army ~render:render_army
-    ; View.Table.Col.make "Wynik" ~get:Ui_entry.score ~render:render_score
+    let render_place _ = N.textf "%d" in
+    [ View.Table.Col.make "Miejsce" ~get:Ui_entry_and_place.place ~render:render_place
+    ; View.Table.Col.make
+        "Użytkownik"
+        ~get:(Ui_entry_and_place.entry >> Ui_entry.user_data)
+        ~render:render_user_data
+    ; View.Table.Col.make
+        "Strategia"
+        ~get:(Ui_entry_and_place.entry >> Ui_entry.army)
+        ~render:render_army
+    ; View.Table.Col.make
+        "Wynik"
+        ~get:(Ui_entry_and_place.entry >> Ui_entry.score)
+        ~render:render_score
     ]
   in
   View.Table.render theme columns scoreboard
