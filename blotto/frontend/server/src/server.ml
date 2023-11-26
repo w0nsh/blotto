@@ -2,17 +2,21 @@ open! Core
 open! Async
 open Import
 
+let current_etag = "abeb4dbc1362d522452335a71286c21d" (* change after any change *)
+
 let initialize_connection _initiated_from _addr _inet connection =
   { Connection_state.connection }
 ;;
 
 let respond_string ?flush ?headers ?status ~content_type s =
   let headers = Cohttp.Header.add_opt headers "Content-Type" content_type in
+  let headers = Cohttp.Header.add headers "ETag" current_etag in
   Cohttp_async.Server.respond_string ?flush ~headers ?status s
 ;;
 
-let handler ~body:_ _inet req =
-  let uri = Cohttp.Request.uri req in
+let respond_not_modified = Cohttp_async.Server.respond (Cohttp.Code.status_of_code 304)
+
+let respond_by_uri uri =
   match Route.of_uri uri with
   | Script ->
     respond_string
@@ -25,6 +29,15 @@ let handler ~body:_ _inet req =
       ~content_type:"text/html"
       ~status:`Not_found
       Embedded_files.not_found_dot_html
+;;
+
+let handler ~body:_ _inet req =
+  let headers = Cohttp.Request.headers req in
+  match Cohttp.Header.get headers "If-None-Match" with
+  | Some etag when String.equal etag current_etag -> respond_not_modified
+  | Some _ | None ->
+    let uri = Cohttp.Request.uri req in
+    respond_by_uri uri
 ;;
 
 let attempt_to_connect host_and_port =
