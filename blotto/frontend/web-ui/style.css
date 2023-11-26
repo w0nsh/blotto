@@ -226,3 +226,7 @@ form button {
 .scoreboard-view table {
     flex-grow: 1;
 }
+
+.scoreboard-view table td {
+    white-space: pre;
+}
