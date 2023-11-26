@@ -25,8 +25,11 @@ let get_connection () =
     (fun () -> Deferred.Or_error.return ())
 ;;
 
-let connection_var = Var.create (get_connection ())
-let connection () = Var.get connection_var
+let connection_var = Var.create None
+let init () = Var.set connection_var (Some (get_connection ()))
+
+(* TODO: does this really need to be called after Async_js.init? *)
+let connection () = Var.get connection_var |> Option.value_exn
 
 module Make (Arg : Rpc_intf.S) = struct
   include Arg

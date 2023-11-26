@@ -141,8 +141,9 @@ form button {
 .games-list .refresh-button {
     cursor: pointer;
     position: absolute;
-    left: 10px;
-    height: 100%;
+    height: 70%;
+    margin-left: 15px;
+    transform: translate(0%, 20%);
 }
 
 .game-list-entry {

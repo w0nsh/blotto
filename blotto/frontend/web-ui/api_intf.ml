@@ -17,6 +17,8 @@ module type S = sig
 end
 
 module type Api = sig
+  val init : unit -> unit
+
   (* TODO: better way to do this? also include query and response in the module *)
 
   module Get_game :

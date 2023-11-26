@@ -3,6 +3,7 @@ open! Import
 
 let run () =
   Async_js.init ();
+  Api.init ();
   let app = App.component in
   let theme =
     Kado.theme
