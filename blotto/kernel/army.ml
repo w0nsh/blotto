@@ -29,9 +29,9 @@ let create army =
 let create_exn army = Or_error.ok_exn (create army)
 let to_array = Fn.id
 
-let fold2i army enemy_army ~f =
+let fold2i army enemy_army ~init ~f =
   let armies_zipped = Array.zip_exn army enemy_army in
-  Array.foldi armies_zipped ~init:0 ~f:(fun i acc (a, b) -> f acc ~castle:(i + 1) ~a ~b)
+  Array.foldi armies_zipped ~init ~f:(fun i acc (a, b) -> f acc ~castle:(i + 1) ~a ~b)
 ;;
 
 let%expect_test "create" =
@@ -57,8 +57,8 @@ let%expect_test "fold2i" =
   let army1 = create_exn [| 1; 2; 3; 4; 5; 6; 7; 8; 9; 55 |]
   and army2 = create_exn [| 10; 10; 10; 10; 10; 10; 10; 10; 10; 10 |] in
   let f acc ~castle ~a ~b = acc + if a > b then castle else 0 in
-  print_s [%sexp (fold2i army1 army2 ~f : int)];
-  print_s [%sexp (fold2i army2 army1 ~f : int)];
+  print_s [%sexp (fold2i army1 army2 ~init:0 ~f : int)];
+  print_s [%sexp (fold2i army2 army1 ~init:0 ~f : int)];
   [%expect {|
     10
     45 |}]

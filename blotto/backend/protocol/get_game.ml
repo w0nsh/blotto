@@ -16,7 +16,7 @@ module T = struct
 
     let%expect_test _ =
       print_endline [%bin_digest: t];
-      [%expect {| c9ca3a16b7d60221378869c1fb0b2fd5 |}]
+      [%expect {| 5f9d29c47e2b2982a9c3cca08bb8cdd7 |}]
     ;;
   end
 

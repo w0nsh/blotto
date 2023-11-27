@@ -32,7 +32,7 @@ let%expect_test "create" =
       ~f:Army.create_exn
   in
   let eval army enemy_army =
-    Army.fold2i army enemy_army ~f:(fun acc ~castle ~a ~b ->
+    Army.fold2i army enemy_army ~init:0 ~f:(fun acc ~castle ~a ~b ->
       acc + if a > b then castle else 0)
   in
   let scoreboard = create ~entries:(List.zip_exn tokens armies) ~eval in
