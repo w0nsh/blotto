@@ -2,7 +2,7 @@ open! Core
 open! Async
 open Import
 
-let current_etag = "W/\"v0005\"" (* change after any change *)
+let current_etag = "W/\"v0006\"" (* change after any change *)
 
 let initialize_connection _initiated_from _addr _inet connection =
   { Connection_state.connection }
