@@ -63,9 +63,7 @@ let%expect_test "create" =
         (rule
          ((kind Basic)
           (description
-            "Klasyczna wersja gry. Dwa wojska walcz\196\133 o ka\197\188d\196\133 twierdz\196\153. Gracz zdobywa\
-           \ndan\196\133 twierdz\196\153 tylko wtedy, kiedy atakuje j\196\133 \197\155ci\197\155le wi\196\153kszym zast\196\153pem \197\188o\197\130nierzy.\
-           \nWynik pojedynczego pojedynku to suma numer\195\179w zdobytych twierdz.")))))
+           "Klasyczna wersja gry. Dwa wojska walcz\196\133 o ka\197\188d\196\133 twierdz\196\153. Gracz zdobywa dan\196\133 twierdz\196\153 tylko wtedy, kiedy atakuje j\196\133 \197\155ci\197\155le wi\196\153kszym zast\196\153pem \197\188o\197\130nierzy. Wynik pojedynczego pojedynku to suma numer\195\179w zdobytych twierdz.")))))
       (allowed_users Any) (entries ())))
     (Error
      ("Start date must be before end date."
@@ -89,9 +87,7 @@ let%expect_test "create" =
         (rule
          ((kind Basic)
           (description
-            "Klasyczna wersja gry. Dwa wojska walcz\196\133 o ka\197\188d\196\133 twierdz\196\153. Gracz zdobywa\
-           \ndan\196\133 twierdz\196\153 tylko wtedy, kiedy atakuje j\196\133 \197\155ci\197\155le wi\196\153kszym zast\196\153pem \197\188o\197\130nierzy.\
-           \nWynik pojedynczego pojedynku to suma numer\195\179w zdobytych twierdz.")))))
+           "Klasyczna wersja gry. Dwa wojska walcz\196\133 o ka\197\188d\196\133 twierdz\196\153. Gracz zdobywa dan\196\133 twierdz\196\153 tylko wtedy, kiedy atakuje j\196\133 \197\155ci\197\155le wi\196\153kszym zast\196\153pem \197\188o\197\130nierzy. Wynik pojedynczego pojedynku to suma numer\195\179w zdobytych twierdz.")))))
       (allowed_users Any)
       (entries
        ((first-token (1 2 3 4 5 6 7 8 9 55))

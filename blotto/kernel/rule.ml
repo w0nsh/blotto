@@ -173,5 +173,8 @@ let%expect_test "eval" =
     22
     33 |}];
   print_s [%sexp (eval funky_grid army1 army2 : int)];
-  print_s [%sexp (eval funky_grid army2 army1 : int)]
+  print_s [%sexp (eval funky_grid army2 army1 : int)];
+  [%expect {|
+    10
+    57 |}]
 ;;
