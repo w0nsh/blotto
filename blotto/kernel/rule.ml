@@ -67,15 +67,14 @@ let funky_grid =
       \     8   1   9\n\
       \     4   7   5\n\
       \         6  \n\n\
-       Kiedy żołnierze zdobędą zamek oraz wszystkie zamki sąsiadujące z nim (na wschód, \
-       zachód, północ, południe), punkty za ten zamek będą liczone podwójnie. Dla \
-       przykładu, jeżeli Alicja obierze strategię\n\
-      \     10, 10, 10, 10, 10, 10, 10, 10, 10, 10,\n\
+       Kiedy żołnierze zdobędą zamek, jego wynik jest pomnożony przez liczbę zdobytych \
+       sąsiednich zamków (na wschód, zachód, północ, południe). Dla przykładu, jeżeli \
+       Alicja obierze strategię\n\
+      \      0, 20, 20, 20, 20, 20,  0,  0,  0,  0,\n\
        a Robert\n\
-      \     90,  0,  0,  0, 10,  0,  0,  0,  0,  0,\n\
-       to Alicja zdobędzie pojedyncze punkty za zamki 7, 8, 9, 10 oraz podwójne punkty \
-       za zamki 2, 3, 4, 6. Robert zdobędzie pojedynczy punkt za zamek 1. Ostatecznie \
-       Alicja skończy z wynikiem 64, a Robert z wynikiem 1."
+      \     20,  0,  0,  0,  0,  0, 20, 20, 20, 20,\n\
+       to Alicja nie zdobędzie żadnych punktów, a Robert zdobędzie 4 punkty za zamek 1 \
+       oraz 7 + 8 + 9 + 10 = 34 punktów za zamki 7, 8, 9, 10."
   }
 ;;
 
@@ -110,10 +109,7 @@ let eval_funky_grid army enemy_army =
   let army = Army.to_array army in
   let enemy_army = Army.to_array enemy_army in
   let is_taken castle = army.(castle - 1) > enemy_army.(castle - 1) in
-  let are_taken castles =
-    let not_taken = List.filter castles ~f:(fun castle -> not (is_taken castle)) in
-    List.is_empty not_taken
-  in
+  let count_taken castles = List.count castles ~f:is_taken in
   let adjacent =
     [ 1, [ 7; 8; 9; 10 ]
     ; 2, [ 8; 10 ]
@@ -128,12 +124,7 @@ let eval_funky_grid army enemy_army =
     ]
   in
   List.fold adjacent ~init:0 ~f:(fun acc (castle, adj) ->
-    let cur_score =
-      match is_taken castle, are_taken adj with
-      | false, _ -> 0
-      | true, false -> castle
-      | true, true -> 2 * castle
-    in
+    let cur_score = if is_taken castle then castle * count_taken adj else 0 in
     cur_score + acc)
 ;;
 
