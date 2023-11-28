@@ -12,6 +12,7 @@ let view_game_info ~game_id ~game_info =
         ~attrs:[ A.class_ "content" ]
         [ Game_info_view.component game_info
         ; Pane.component
+            ~attrs:[ A.class_ "submit-form" ]
             [ N.h2 ~attrs:[ A.class_ "submit-header" ] [ N.text "Zgłoszenie" ]
             ; Pane.component ~add_padding:false [ submit_strategy ]
             ]

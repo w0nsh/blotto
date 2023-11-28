@@ -57,6 +57,11 @@ form button {
     margin-top: 8px;
 }
 
+.monospace {
+    font-family: monospace;
+    font-size: 16px;
+}
+
 .flex-center-container {
     display: flex;
 }
@@ -199,6 +204,18 @@ form button {
     margin: auto;
 }
 
+.game-view .content .submit-header {
+    margin-top: 50px;
+}
+
+.game-view .content .submit-form {
+    text-align: left;
+}
+
+.game-view .content .submit-form td {
+    padding-left: 0 !important;
+}
+
 .game-info-view {
     max-width: 700px;
     text-align: left;
@@ -216,12 +233,8 @@ form button {
     margin-bottom: 30px;
 }
 
-.game-info-view .submit-header {
-    margin-top: 50px;
-}
-
-.game-info-view td {
-    padding-left: 0 !important;
+.game-info-view .rules {
+    white-space: pre-wrap;
 }
 
 .scoreboard-view {
@@ -229,7 +242,7 @@ form button {
     flex-direction: column;
 }
 
-.game-info-wrapper {
+.scoreboard-view .game-info-wrapper {
     margin: auto;
 }
 

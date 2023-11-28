@@ -34,10 +34,7 @@ let view_scoreboard scoreboard =
   let columns =
     let render_army _ army =
       View.text
-        ~attrs:
-          [ A.style (Css_gen.font_family [ "monospace" ])
-          ; A.style (Css_gen.font_size (`Px 16))
-          ]
+        ~attrs:[ A.class_ "monospace" ]
         (Army.to_array army
          |> Array.to_list
          |> List.map ~f:Int.to_string

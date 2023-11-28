@@ -11,6 +11,6 @@ let component ?(attrs = []) { Game_info.name; description; start_date; end_date;
     ; N.h4 [ N.text "Czas rozpoczęcia i końca" ]
     ; N.p [ N.text (print_time start_date ^ " - " ^ print_time end_date) ]
     ; N.h4 [ N.text "Zasady" ]
-    ; N.p [ N.text (Rule.description rule) ]
+    ; N.p ~attrs:[ A.classes [ "rules"; "monospace" ] ] [ N.text (Rule.description rule) ]
     ]
 ;;
