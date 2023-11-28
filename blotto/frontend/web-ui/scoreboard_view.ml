@@ -66,19 +66,27 @@ let view_scoreboard scoreboard =
 ;;
 
 let view ~game_id =
-  let%sub scoreboard, fetch = Api.Get_ui_scoreboard.dispatcher in
-  let%sub () = Bonsai.Edge.on_change (module Game_id) game_id ~callback:fetch in
-  match%sub scoreboard with
-  | None -> Bonsai.const (N.text "downloading...")
-  | Some scoreboard ->
-    (match%sub scoreboard with
-     | Error err ->
+  let%sub scoreboard, fetch_score = Api.Get_ui_scoreboard.dispatcher in
+  let%sub () = Bonsai.Edge.on_change (module Game_id) game_id ~callback:fetch_score in
+  let%sub game_info, fetch_game_info = Api.Get_game.dispatcher in
+  let%sub () = Bonsai.Edge.on_change (module Game_id) game_id ~callback:fetch_game_info in
+  match%sub Value.both scoreboard game_info with
+  | None, _ | _, None -> Bonsai.const (N.text "downloading...")
+  | Some scoreboard, Some game_info ->
+    (match%sub Value.both scoreboard game_info with
+     | Error err, _ | _, Error err ->
        let%arr err = err in
        N.text (Error.to_string_hum err)
-     | Ok scoreboard ->
+     | Ok scoreboard, Ok game_info ->
        let%sub scoreboard = view_scoreboard scoreboard in
-       let%arr scoreboard = scoreboard in
-       Pane.component ~attrs:[ A.class_ "scoreboard-view" ] [ scoreboard ])
+       let%arr scoreboard = scoreboard
+       and game_info = game_info in
+       let game_view = Game_info_view.component game_info in
+       Pane.component
+         ~attrs:[ A.class_ "scoreboard-view" ]
+         [ Pane.component ~attrs:[ A.class_ "game-info-wrapper" ] [ game_view ]
+         ; scoreboard
+         ])
 ;;
 
 let component ~game_id =

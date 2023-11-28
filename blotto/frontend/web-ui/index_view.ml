@@ -45,7 +45,7 @@ let rules =
                    twierdz. W naszym przykładzie \n\
                   \  Alicja zdobyła twierdze o numerach 1, 2, 3, 5 oraz 7, zatem jej \
                    wynik to 18 punktów. Natomiast Robert zdobył\n\
-                  \  twierdze 6, 8, 9, oraz 10, zatem zdobywa 35 punktów."
+                  \  twierdze 6, 8, 9, oraz 10, zatem zdobywa 33 punktów."
               ]
           ]
       ; View.text

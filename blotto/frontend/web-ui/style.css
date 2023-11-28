@@ -196,33 +196,41 @@ form button {
 }
 
 .game-view .content {
-    text-align: left;
-    max-width: 700px;
     margin: auto;
 }
 
-.game-view .content h4 {
+.game-info-view {
+    max-width: 700px;
+    text-align: left;
+}
+
+.game-info-view h4 {
     margin: 0;
 }
 
-.game-view .content p {
+.game-info-view p {
     margin-top: 6px;
 }
 
-.game-view .content .description {
+.game-info-view .description {
     margin-bottom: 30px;
 }
 
-.game-view .content .submit-header {
+.game-info-view .submit-header {
     margin-top: 50px;
 }
 
-.game-view .content td {
+.game-info-view td {
     padding-left: 0 !important;
 }
 
 .scoreboard-view {
     display: flex;
+    flex-direction: column;
+}
+
+.game-info-wrapper {
+    margin: auto;
 }
 
 .scoreboard-view table {

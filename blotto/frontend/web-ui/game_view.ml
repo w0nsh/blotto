@@ -2,24 +2,19 @@ open! Core
 open Import
 open Bonsai.Let_syntax
 
-let print_time = Time_ns_fix.to_sec_string ~zone:(Time_float.Zone.of_utc_offset ~hours:1)
-
 let view_game_info ~game_id ~game_info =
   let%sub submit_strategy = Submit_strategy.component ~game_id in
-  let%arr { Game_info.name; description; start_date; end_date; rule } = game_info
+  let%arr game_info = game_info
   and submit_strategy = submit_strategy in
   Pane.component
     ~attrs:[ A.class_ "game-view" ]
     [ Pane.component
         ~attrs:[ A.class_ "content" ]
-        [ N.h2 [ N.text name ]
-        ; N.p ~attrs:[ A.class_ "description" ] [ N.text description ]
-        ; N.h4 [ N.text "Czas rozpoczęcia i końca" ]
-        ; N.p [ N.text (print_time start_date ^ " - " ^ print_time end_date) ]
-        ; N.h4 [ N.text "Zasady" ]
-        ; N.p [ N.text (Rule.description rule) ]
-        ; N.h2 ~attrs:[ A.class_ "submit-header" ] [ N.text "Zgłoszenie" ]
-        ; Pane.component ~add_padding:false [ submit_strategy ]
+        [ Game_info_view.component game_info
+        ; Pane.component
+            [ N.h2 ~attrs:[ A.class_ "submit-header" ] [ N.text "Zgłoszenie" ]
+            ; Pane.component ~add_padding:false [ submit_strategy ]
+            ]
         ]
     ]
 ;;
