@@ -2,42 +2,34 @@ open! Core
 open! Async
 open Import
 
-let current_etag = "W/\"v0009\"" (* change after any change *)
-
 let initialize_connection _initiated_from _addr _inet connection =
   { Connection_state.connection }
 ;;
 
-let respond_string ?flush ?headers ?status ~content_type s =
+let respond_resource ?flush ?headers resource =
+  let { Response.content; content_type; status } = Resource.to_response resource in
+  let etag = Resource.etag resource in
   let headers = Cohttp.Header.add_opt headers "Content-Type" content_type in
-  let headers = Cohttp.Header.add headers "ETag" current_etag in
-  Cohttp_async.Server.respond_string ?flush ~headers ?status s
+  let headers = Cohttp.Header.add headers "ETag" etag in
+  Cohttp_async.Server.respond_string ?flush ~headers ~status content
 ;;
 
 let respond_not_modified = Cohttp_async.Server.respond (Cohttp.Code.status_of_code 304)
 
-let respond_by_uri uri =
-  match Route.of_uri uri with
-  | Script ->
-    respond_string
-      ~content_type:"application/javascript"
-      Embedded_files.blotto_frontend_web_ui_dot_bc_dot_js
-  | Style -> respond_string ~content_type:"text/css" Embedded_files.style_dot_css
-  | Web_ui _ -> respond_string ~content_type:"text/html" Embedded_files.index_dot_html
-  | Not_found ->
-    respond_string
-      ~content_type:"text/html"
-      ~status:`Not_found
-      Embedded_files.not_found_dot_html
+let get_if_non_match_etags req =
+  let headers = Cohttp.Request.headers req in
+  match Cohttp.Header.get headers "If-None-Match" with
+  | Some etag -> String.split etag ~on:',' |> List.map ~f:String.rstrip
+  | None -> []
 ;;
 
 let handler ~body:_ _inet req =
-  let headers = Cohttp.Request.headers req in
-  match Cohttp.Header.get headers "If-None-Match" with
-  | Some etag when String.equal etag current_etag -> respond_not_modified
-  | Some _ | None ->
-    let uri = Cohttp.Request.uri req in
-    respond_by_uri uri
+  let route = Cohttp.Request.uri req |> Route.of_uri in
+  let resource = Resource.of_route route in
+  let etag = Resource.etag resource in
+  if List.exists (get_if_non_match_etags req) ~f:(String.equal etag)
+  then respond_not_modified
+  else respond_resource resource
 ;;
 
 let attempt_to_connect host_and_port =
