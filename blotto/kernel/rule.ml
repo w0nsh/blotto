@@ -6,6 +6,7 @@ module Kind = struct
     | First_win_tripled
     | Half_survivors_proceed_to_next_castle
     | Funky_grid
+    | Crush_or_lose
   [@@deriving sexp, bin_io, equal]
 
   let of_string str = Sexp.of_string str |> t_of_sexp
@@ -78,6 +79,22 @@ let funky_grid =
   }
 ;;
 
+let crush_or_lose =
+  { kind = Crush_or_lose
+  ; description =
+      "Podczas ostatecznego starcia los sprzyja słabszym. Jeżeli żadna z armii \
+       przydzielonych do zamku nie jest dwa razy większa od armii przeciwnej, zamek \
+       zdobywa armia mniejsza (w przypadku remisu wciąż nie wygrywa nikt). Wygrana co \
+       najmniej dwa razy większą armią podnosi morale, więc zamek zdobyty w ten sposób \
+       jest warty dwa razy więcej niż zwykle. Dla przykładu, jeżeli Alicja obierze \
+       strategię\n\
+      \      0,  0,  0,  0,  0,  0,  1,  6, 80,  9,\n\
+       a Robert\n\
+      \      0,  0,  0,  0,  0,  0,  0,  6, 40,  5,\n\
+       to Alicja zdobędzie 14 + 18 = 32 punkty, a Robert 10 punktów."
+  }
+;;
+
 let eval_basic army enemy_army =
   Army.fold2i army enemy_army ~init:0 ~f:(fun acc ~castle ~a ~b ->
     acc + if a > b then castle else 0)
@@ -128,12 +145,18 @@ let eval_funky_grid army enemy_army =
     cur_score + acc)
 ;;
 
+let eval_crush_or_lose army enemy_army =
+  Army.fold2i army enemy_army ~init:0 ~f:(fun acc ~castle ~a ~b ->
+    acc + if a >= 2 * b then 2 * castle else if a < b && b < 2 * a then castle else 0)
+;;
+
 let eval t =
   match t.kind with
   | Basic -> eval_basic
   | First_win_tripled -> eval_first_win_tripled
   | Half_survivors_proceed_to_next_castle -> eval_survivors_proceed_to_next_castle
   | Funky_grid -> eval_funky_grid
+  | Crush_or_lose -> eval_crush_or_lose
 ;;
 
 let arg_type =
@@ -142,7 +165,8 @@ let arg_type =
     | Basic -> basic
     | First_win_tripled -> first_win_tripled
     | Half_survivors_proceed_to_next_castle -> half_survivors_proceed_to_next_castle
-    | Funky_grid -> funky_grid)
+    | Funky_grid -> funky_grid
+    | Crush_or_lose -> crush_or_lose)
 ;;
 
 let%expect_test "eval" =
@@ -167,5 +191,10 @@ let%expect_test "eval" =
   print_s [%sexp (eval funky_grid army2 army1 : int)];
   [%expect {|
     10
-    57 |}]
+    83 |}];
+  print_s [%sexp (eval crush_or_lose army1 army2 : int)];
+  print_s [%sexp (eval crush_or_lose army2 army1 : int)];
+  [%expect {|
+      51
+      25 |}]
 ;;
