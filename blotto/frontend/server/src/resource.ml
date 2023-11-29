@@ -48,12 +48,12 @@ let etag_map =
     Core.Map.add_exn
       acc
       ~key:t
-      ~data:(to_response t |> Response.digest |> sprintf "\"%s\""))
+      ~data:(to_response t |> Response.digest |> sprintf "W/\"%s\""))
 ;;
 
 let etag t = Core.Map.find_exn etag_map t
 
 let%expect_test "etag-test" =
   printf "%s" (etag Not_found);
-  [%expect {| "99de204f662827e29d65e1580e0f6475" |}]
+  [%expect {| W/"99de204f662827e29d65e1580e0f6475" |}]
 ;;
