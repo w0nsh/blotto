@@ -1,3 +1,5 @@
+include Composition_infix
+
 include struct
   open Async_rpc_kernel
   module Persistent_connection = Persistent_connection

@@ -2,6 +2,7 @@
  (name blotto_frontend_server_lib)
  (libraries
   core
+  core_kernel.composition_infix
   async
   async.log_extended
   async_rpc_kernel
@@ -10,6 +11,7 @@
   blotto_kernel_lib
   blotto_backend_protocol_lib
   blotto_frontend_protocol_lib)
+ (inline_tests)
  (preprocess
   (pps ppx_jane)))
 
