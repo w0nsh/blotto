@@ -147,7 +147,8 @@ let eval_funky_grid army enemy_army =
 
 let eval_crush_or_lose army enemy_army =
   Army.fold2i army enemy_army ~init:0 ~f:(fun acc ~castle ~a ~b ->
-    acc + if a >= 2 * b then 2 * castle else if a < b && b < 2 * a then castle else 0)
+    acc
+    + if a > b && a >= 2 * b then 2 * castle else if a < b && b < 2 * a then castle else 0)
 ;;
 
 let eval t =
