@@ -19,8 +19,8 @@ let respond_not_modified = Cohttp_async.Server.respond (Cohttp.Code.status_of_co
 let get_if_non_match_etags req =
   let headers = Cohttp.Request.headers req in
   match Cohttp.Header.get headers "If-None-Match" with
-  | Some etag -> String.split etag ~on:',' |> List.map ~f:String.rstrip
   | None -> []
+  | Some etag -> String.split etag ~on:',' |> List.map ~f:String.rstrip
 ;;
 
 let handler ~body:_ _inet req =
