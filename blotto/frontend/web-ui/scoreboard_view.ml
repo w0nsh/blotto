@@ -41,14 +41,14 @@ let view_scoreboard scoreboard =
          |> List.map ~f:(String.pad_left ~len:3)
          |> String.concat ~sep:" ")
     in
-    let render_user_data _ user_data = View.text (User_data.name user_data) in
+    let render_user_name _ user_name = View.text user_name in
     let render_score _ = N.textf "%.3f" in
     let render_place _ = N.textf "%d" in
     [ View.Table.Col.make "Miejsce" ~get:Ui_entry_and_place.place ~render:render_place
     ; View.Table.Col.make
         "Użytkownik"
-        ~get:(Ui_entry_and_place.entry >> Ui_entry.user_data)
-        ~render:render_user_data
+        ~get:(Ui_entry_and_place.entry >> Ui_entry.user_name)
+        ~render:render_user_name
     ; View.Table.Col.make
         "Strategia"
         ~get:(Ui_entry_and_place.entry >> Ui_entry.army)
