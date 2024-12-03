@@ -7,6 +7,7 @@ module Kind = struct
     | Half_survivors_proceed_to_next_castle
     | Funky_grid
     | Crush_or_lose
+    | Binary_tree
   [@@deriving sexp, bin_io, equal]
 
   let of_string str = Sexp.of_string str |> t_of_sexp
@@ -95,6 +96,30 @@ let crush_or_lose =
   }
 ;;
 
+let binary_tree =
+  { kind = Binary_tree
+  ; description =
+      {|W tej wersji gry zamki ustawione są w węzłach 10-elementowego drzewa binarnego:
+
+                              10
+                            /    \
+                           8      9
+                          / \    / \
+                         6   7  4   5
+                        / \   \
+                       1   2   3
+
+Walki odbywają się po kolei, w zamkach od 1 do 10. Jednakże, jak wiadomo, morale żołnierzy są kluczowe w wygrywaniu walki. Żołnierze uciekną z danego zamku, jeżeli sojusznicza armia nie wygrała w żadnym z dzieci węzła, w którym znajduje ten zamek. Przykładowo, jeżli armia Alicji przegra w zamkach 1 i 2 (tj. będzie tam miała odpowiednio mniej żołnierzy, niż armia Roberta), to żołenierze z zamku 4 uciekną i Alicja na pewno nie zdobędzie tego zamku.
+
+Dla przykładu, jeżeli Alicja obierze strategię
+      15,  8,  3,  4, 15,  6,  7,  8, 27,  7,
+a Robert
+       1, 23, 10, 10, 10,  6, 10, 10, 10, 10,
+to Alicja zdobędzie 15 punktów, a Robert 34.
+|}
+  }
+;;
+
 let eval_basic army enemy_army =
   Army.fold2i army enemy_army ~init:0 ~f:(fun acc ~castle ~a ~b ->
     acc + if a > b then castle else 0)
@@ -151,6 +176,30 @@ let eval_crush_or_lose army enemy_army =
     + if a > b && a >= 2 * b then 2 * castle else if a < b && b < 2 * a then castle else 0)
 ;;
 
+let eval_binary_tree army enemy_army =
+  let can_fight castle won =
+    let exists x = List.exists ~f:(Int.equal x) won in
+    match castle with
+    | _ when castle <= 5 -> true
+    | 6 -> exists 1 || exists 2
+    | 7 -> exists 3
+    | 8 -> exists 6 || exists 7
+    | 9 -> exists 4 || exists 5
+    | 10 -> exists 8 || exists 9
+    | _ -> failwith "Won't happen"
+  in
+  Army.fold2i army enemy_army ~init:([], []) ~f:(fun (won_a, won_b) ~castle ~a ~b ->
+    let a = if can_fight castle won_a then a else 0 in
+    let b = if can_fight castle won_b then b else 0 in
+    match Int.compare a b with
+    | 1 -> castle :: won_a, won_b
+    | 0 -> won_a, won_b
+    | -1 -> won_a, castle :: won_b
+    | _ -> failwith "wont happen")
+  |> Tuple2.get1
+  |> List.fold ~init:0 ~f:( + )
+;;
+
 let eval t =
   match t.kind with
   | Basic -> eval_basic
@@ -158,6 +207,7 @@ let eval t =
   | Half_survivors_proceed_to_next_castle -> eval_survivors_proceed_to_next_castle
   | Funky_grid -> eval_funky_grid
   | Crush_or_lose -> eval_crush_or_lose
+  | Binary_tree -> eval_binary_tree
 ;;
 
 let arg_type =
@@ -167,35 +217,41 @@ let arg_type =
     | First_win_tripled -> first_win_tripled
     | Half_survivors_proceed_to_next_castle -> half_survivors_proceed_to_next_castle
     | Funky_grid -> funky_grid
+    | Binary_tree -> binary_tree
     | Crush_or_lose -> crush_or_lose)
 ;;
 
 let%expect_test "eval" =
-  let army1 = Army.create_exn [| 15; 8; 3; 4; 5; 6; 7; 8; 37; 7 |]
-  and army2 = Army.create_exn [| 10; 10; 10; 10; 10; 10; 10; 10; 10; 10 |] in
+  let army1 = Army.create_exn [| 15; 8; 3; 4; 15; 6; 7; 8; 27; 7 |]
+  and army2 = Army.create_exn [| 1; 23; 10; 10; 10; 6; 10; 10; 10; 10 |] in
   print_s [%sexp (eval basic army1 army2 : int)];
   print_s [%sexp (eval basic army2 army1 : int)];
   [%expect {|
-    10
-    45 |}];
+    15
+    34 |}];
   print_s [%sexp (eval first_win_tripled army1 army2 : int)];
   print_s [%sexp (eval first_win_tripled army2 army1 : int)];
   [%expect {|
-    12
-    49 |}];
+    17
+    38 |}];
   print_s [%sexp (eval half_survivors_proceed_to_next_castle army1 army2 : int)];
   print_s [%sexp (eval half_survivors_proceed_to_next_castle army2 army1 : int)];
   [%expect {|
-    22
-    33 |}];
+    20
+    35 |}];
   print_s [%sexp (eval funky_grid army1 army2 : int)];
   print_s [%sexp (eval funky_grid army2 army1 : int)];
   [%expect {|
-    10
-    83 |}];
+    24
+    58 |}];
   print_s [%sexp (eval crush_or_lose army1 army2 : int)];
   print_s [%sexp (eval crush_or_lose army2 army1 : int)];
   [%expect {|
-      51
-      25 |}]
+      45
+      23 |}];
+  print_s [%sexp (eval binary_tree army1 army2 : int)];
+  print_s [%sexp (eval binary_tree army2 army1 : int)];
+  [%expect {|
+    15
+    34 |}]
 ;;
