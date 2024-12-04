@@ -109,7 +109,7 @@ let binary_tree =
                         / \   \
                        1   2   3
 
-Walki odbywają się po kolei, w zamkach od 1 do 10. Jednakże, jak wiadomo, morale żołnierzy są kluczowe w wygrywaniu walki. Żołnierze uciekną z danego zamku, jeżeli sojusznicza armia nie wygrała w żadnym z dzieci węzła, w którym znajduje ten zamek. Przykładowo, jeżli armia Alicji przegra w zamkach 1 i 2 (tj. będzie tam miała odpowiednio mniej żołnierzy, niż armia Roberta), to żołenierze z zamku 4 uciekną i Alicja na pewno nie zdobędzie tego zamku.
+Walki odbywają się po kolei, w zamkach od 1 do 10. Jednakże, jak wiadomo, morale żołnierzy są kluczowe w wygrywaniu walki. Żołnierze uciekną z danego zamku, jeżeli sojusznicza armia nie wygrała w żadnym z dzieci węzła, w którym znajduje ten zamek. Przykładowo, jeżli armia Alicji przegra w zamkach 1 i 2 (tj. będzie tam miała odpowiednio mniej żołnierzy, niż armia Roberta), to żołenierze z zamku 6 uciekną i Alicja na pewno nie zdobędzie tego zamku (Robert wtedy ma gwarantowaną wygraną w tym zamku, o ile ustawił w nim niezerową liczbę żołnierzy).
 
 Dla przykładu, jeżeli Alicja obierze strategię
       15,  8,  3,  4, 15,  6,  7,  8, 27,  7,
