@@ -8,6 +8,7 @@ module Kind = struct
     | Funky_grid
     | Crush_or_lose
     | Binary_tree
+    | Binary_balls_of_power
   [@@deriving sexp, bin_io, equal]
 
   let of_string str = Sexp.of_string str |> t_of_sexp
@@ -120,6 +121,30 @@ to Alicja zdobędzie 15 punktów, a Robert 34.
   }
 ;;
 
+let binary_balls_of_power =
+  { kind = Binary_balls_of_power
+  ; description =
+      {|W tej wersji gry żołnierze zastąpieni są przez potężnych binarnych magów, a walka odbywa się n!-wymiarowej kwantowej przestrzeni międzystrunowej. Zastępy magów obu armi zcierają się jak zwykle w 10 zamkach, jednakże walka toczy się w świecie poza pojęciem zwykłych śmiertelników. Celem obu armi jest zdobycie ośmiu magicznych gwiezdnych kuli mocy. Kule występują w parach zero-jedynkowych, na jednej z czterech spektralnych superpozycjach: zerowej, pierwszej, drugiej lub trzeciej. Magowie ustawieni w zamku o numerze i mają dostęp do kul, których pozycja odpowiada zapisowi binarnemu liczby i. Przykładowo, magowie z twierdzy 5 są w stanie walczyć o kule zerową w pozycji trzeciej, kulę jedynkową w pozycji drugiej, kulę zerową w pozycji pierwszej oraz kulę jedynkową w pozycji zerowej. Magowie są wstanie rozdystrybuować swoje siły jedenakowo między wszystkie z dostępnych im kul. Siła, z jaką Twoja armia walczy o daną kulę można opisać jako sumę liczby magów w twierdzach, z których istnieje dostęp do tej kuli. Przykładowo, do walki o kulę jedynkową w pozycji pierwszej będą walczyć magowie z twierdz 2, 3, 6, 7 oraz 10, a o kulę zerową na pozycji trzeciej magowie z twierdz 1, 2, 3, 4, 5, 6 oraz 7. Wartości kul opisane są w poniższej tabeli, gdzie wiersz wyznacza czy kula jest zerowa czy jedynkowa, a kolumna oznacza jej pozycję:
+
+            +----+----+----+----+----+
+            |    | 0  | 1  | 2  | 3  |
+            +----+----+----+----+----+
+            | 0  | 10 | 15 | 18 | 31 |
+            +----+----+----+----+----+
+            | 1  | 12 | 19 | 25 | 43 |
+            +----+----+----+----+----+
+
+Kulę zdobywa armia magów, która występuje w ścisłej przewadze liczbowej nad armią przeciwnika (w przypaku remisów kula nie wytrzymuje równomiernego przeciążenia z obu stron wojska i następuje jej doszczętna międzywymiarowa dezintegracja).
+
+Przykładowo, jeżeli Alicja rozstawi magów w następujący sposób:
+      15,  8,  3,  4, 15,  6,  7,  8, 27,  7,
+a Robert
+       1, 23, 10, 10, 10,  6, 10, 10, 10, 10,
+to Alicja zdobędzie 88 punktów, a Robert 85.
+|}
+  }
+;;
+
 let eval_basic army enemy_army =
   Army.fold2i army enemy_army ~init:0 ~f:(fun acc ~castle ~a ~b ->
     acc + if a > b then castle else 0)
@@ -200,6 +225,31 @@ let eval_binary_tree army enemy_army =
   |> List.fold ~init:0 ~f:( + )
 ;;
 
+let eval_binary_balls_of_power army enemy_army =
+  let balls =
+    [ 10, [ 2; 4; 6; 8; 10 ]
+    ; 12, [ 1; 3; 5; 7; 9 ]
+    ; 15, [ 1; 4; 5; 8; 9 ]
+    ; 19, [ 2; 3; 6; 7; 10 ]
+    ; 18, [ 1; 2; 3; 8; 9; 10 ]
+    ; 25, [ 4; 5; 6; 7 ]
+    ; 31, [ 1; 2; 3; 4; 5; 6; 7 ]
+    ; 43, [ 8; 9; 10 ]
+    ]
+  in
+  let strength castles army =
+    Army.to_array army
+    |> Array.to_list
+    |> List.filteri ~f:(fun i _ -> List.exists castles ~f:(Int.equal (i + 1)))
+    |> List.fold ~init:1 ~f:( * )
+  in
+  List.map balls ~f:(fun (ball, castles) ->
+    let a = strength castles army in
+    let b = strength castles enemy_army in
+    if a > b then ball else 0)
+  |> List.fold ~init:0 ~f:( + )
+;;
+
 let eval t =
   match t.kind with
   | Basic -> eval_basic
@@ -208,6 +258,7 @@ let eval t =
   | Funky_grid -> eval_funky_grid
   | Crush_or_lose -> eval_crush_or_lose
   | Binary_tree -> eval_binary_tree
+  | Binary_balls_of_power -> eval_binary_balls_of_power
 ;;
 
 let arg_type =
@@ -218,7 +269,8 @@ let arg_type =
     | Half_survivors_proceed_to_next_castle -> half_survivors_proceed_to_next_castle
     | Funky_grid -> funky_grid
     | Binary_tree -> binary_tree
-    | Crush_or_lose -> crush_or_lose)
+    | Crush_or_lose -> crush_or_lose
+    | Binary_balls_of_power -> binary_balls_of_power)
 ;;
 
 let%expect_test "eval" =
@@ -253,5 +305,10 @@ let%expect_test "eval" =
   print_s [%sexp (eval binary_tree army2 army1 : int)];
   [%expect {|
     15
-    34 |}]
+    34 |}];
+  print_s [%sexp (eval binary_balls_of_power army1 army2 : int)];
+  print_s [%sexp (eval binary_balls_of_power army2 army1 : int)];
+  [%expect {|
+    88
+    85 |}]
 ;;
