@@ -124,7 +124,11 @@ to Alicja zdobędzie 15 punktów, a Robert 34.
 let binary_balls_of_power =
   { kind = Binary_balls_of_power
   ; description =
-      {|W tej wersji gry żołnierze zastąpieni są przez potężnych binarnych magów, a walka odbywa się n!-wymiarowej kwantowej przestrzeni międzystrunowej. Zastępy magów obu armi zcierają się jak zwykle w 10 zamkach, jednakże walka toczy się w świecie poza pojęciem zwykłych śmiertelników. Celem obu armi jest zdobycie ośmiu magicznych gwiezdnych kuli mocy. Kule występują w parach zero-jedynkowych, na jednej z czterech spektralnych superpozycjach: zerowej, pierwszej, drugiej lub trzeciej. Magowie ustawieni w zamku o numerze i mają dostęp do kul, których pozycja odpowiada zapisowi binarnemu liczby i. Przykładowo, magowie z twierdzy 5 są w stanie walczyć o kule zerową w pozycji trzeciej, kulę jedynkową w pozycji drugiej, kulę zerową w pozycji pierwszej oraz kulę jedynkową w pozycji zerowej. Magowie są wstanie rozdystrybuować swoje siły jedenakowo między wszystkie z dostępnych im kul. Siła, z jaką Twoja armia walczy o daną kulę można opisać jako sumę liczby magów w twierdzach, z których istnieje dostęp do tej kuli. Przykładowo, do walki o kulę jedynkową w pozycji pierwszej będą walczyć magowie z twierdz 2, 3, 6, 7 oraz 10, a o kulę zerową na pozycji trzeciej magowie z twierdz 1, 2, 3, 4, 5, 6 oraz 7. Wartości kul opisane są w poniższej tabeli, gdzie wiersz wyznacza czy kula jest zerowa czy jedynkowa, a kolumna oznacza jej pozycję:
+      {|W tej wersji gry żołnierze zastąpieni są przez potężnych binarnych magów, a walka odbywa się n!-wymiarowej kwantowej przestrzeni międzystrunowej. Zastępy magów obu armi zcierają się jak zwykle w 10 zamkach, jednakże walka toczy się w świecie poza pojęciem zwykłych śmiertelników. Celem obu armi jest zdobycie ośmiu magicznych gwiezdnych kuli mocy. Kule występują w parach zero-jedynkowych, na jednej z czterech spektralnych superpozycji: zerowej, pierwszej, drugiej lub trzeciej.
+
+Magowie ustawieni w zamku o numerze i mają dostęp do kul, których pozycja odpowiada zapisowi binarnemu liczby i. Przykładowo, magowie z twierdzy 5 są w stanie walczyć o kulę zerową w pozycji trzeciej, kulę jedynkową w pozycji drugiej, kulę zerową w pozycji pierwszej oraz kulę jedynkową w pozycji zerowej. Magowie są wstanie rozdystrybuować swoje siły jedenakowo między wszystkie z dostępnych im kul. Siła, z jaką Twoja armia walczy o daną kulę, można opisać jako **iloczyn** liczby magów w twierdzach, z których istnieje dostęp do tej kuli. Przykładowo, do walki o kulę jedynkową w pozycji pierwszej będą walczyć magowie z twierdz 2, 3, 6, 7 oraz 10, a o kulę zerową na pozycji trzeciej magowie z twierdz 1, 2, 3, 4, 5, 6 oraz 7.
+
+Wartości kul opisane są w poniższej tabeli, gdzie wiersz wyznacza czy kula jest zerowa czy jedynkowa, a kolumna oznacza jej pozycję:
 
             +----+----+----+----+----+
             |    | 0  | 1  | 2  | 3  |
@@ -134,13 +138,18 @@ let binary_balls_of_power =
             | 1  | 12 | 19 | 25 | 43 |
             +----+----+----+----+----+
 
-Kulę zdobywa armia magów, która występuje w ścisłej przewadze liczbowej nad armią przeciwnika (w przypaku remisów kula nie wytrzymuje równomiernego przeciążenia z obu stron wojska i następuje jej doszczętna międzywymiarowa dezintegracja).
+Kulę zdobywa armia magów, których siła jest ściśle większa od siły armii przeciwnika (w przypaku remisów kula nie wytrzymuje równomiernego przeciążenia z obu stron i następuje jej doszczętna międzywymiarowa dezintegracja).
 
 Przykładowo, jeżeli Alicja rozstawi magów w następujący sposób:
       15,  8,  3,  4, 15,  6,  7,  8, 27,  7,
 a Robert
        1, 23, 10, 10, 10,  6, 10, 10, 10, 10,
 to Alicja zdobędzie 88 punktów, a Robert 85.
+
+W tym przykładzie w walce o zerową kulę pierwszej pozycji, siła armii Alicji wynosi 194400, a Roberta 10000.
+
+
+       Powodzenia, niech kule mocy będą z Tobą.
 |}
   }
 ;;
