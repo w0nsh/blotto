@@ -126,7 +126,7 @@ let binary_balls_of_power =
   ; description =
       {|W tej wersji gry żołnierze zastąpieni są przez potężnych binarnych magów, a walka odbywa się n!-wymiarowej kwantowej przestrzeni międzystrunowej. Zastępy magów obu armi ścierają się jak zwykle w 10 zamkach, jednakże walka toczy się w świecie poza pojęciem zwykłych śmiertelników. Celem obu armi jest zdobycie ośmiu magicznych gwiezdnych kuli mocy. Kule występują w parach zero-jedynkowych, na jednej z czterech spektralnych superpozycji: zerowej, pierwszej, drugiej lub trzeciej.
 
-Magowie ustawieni w zamku o numerze i mają dostęp do kul, których pozycja odpowiada zapisowi binarnemu liczby i. Przykładowo, magowie z twierdzy 5 są w stanie walczyć o kulę zerową w pozycji trzeciej, kulę jedynkową w pozycji drugiej, kulę zerową w pozycji pierwszej oraz kulę jedynkową w pozycji zerowej. Magowie są wstanie rozdystrybuować swoje siły jedenakowo między wszystkie z dostępnych im kul.
+Magowie ustawieni w zamku o numerze i mają dostęp do kul, których pozycja odpowiada zapisowi binarnemu liczby i, licząc bity od zera do trzech, gdzie zerowy bit jest najmniej znaczący. Przykładowo, magowie z twierdzy 5 = 0b0101 są w stanie walczyć o kulę zerową w pozycji trzeciej, kulę jedynkową w pozycji drugiej, kulę zerową w pozycji pierwszej oraz kulę jedynkową w pozycji zerowej. Magowie są w stanie rozdystrybuować swoje siły jedenakowo między wszystkie z dostępnych im kul.
 
 Siła, z jaką Twoja armia walczy o daną kulę, można opisać jako **iloczyn** liczby magów w twierdzach, z których istnieje dostęp do tej kuli. Przykładowo, do walki o kulę jedynkową w pozycji pierwszej będą walczyć magowie z twierdz 2, 3, 6, 7 oraz 10, a o kulę zerową na pozycji trzeciej magowie z twierdz 1, 2, 3, 4, 5, 6 oraz 7.
 
@@ -148,7 +148,10 @@ a Robert
        1, 23, 10, 10, 10,  6, 10, 10, 10, 10,
 to Alicja zdobędzie 88 punktów, a Robert 85.
 
-W tym przykładzie w walce o zerową kulę pierwszej pozycji, siła armii Alicji wynosi 194400, a Roberta 10000.
+W tym przykładzie, w walce o zerową kulę pierwszej pozycji, zmierzą się ze sobą wojska z twierdz 1, 4, 5, 8 oraz 9 (ponieważ te liczby mają 0 na pierwszym bicie). Siła armii Alicji wynosi w tej walce wynosi zatem
+      15 * 4 * 15 * 8 * 27 = 194400,
+natomiast Roberta
+      1 * 10 * 10 * 10 * 10 = 10000.
 
 
        Powodzenia, niech kule mocy będą z Tobą.
